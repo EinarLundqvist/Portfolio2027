@@ -1,28 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>My Website</title>
-  <meta name="description" content="A short description of my website.">
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f0f0f">
+<title>Einar Lundqvist</title>
+<meta name="description" content="Selected work by Einar Lundqvist.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700&family=DM+Sans:wght@400;500&family=Instrument+Serif&display=swap">
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <header>
-    <a class="logo" href="#">My Website</a>
-  </header>
+<header class="top">
+  <a class="logo" href="#" aria-label="Darnell Simons, home">
+    <span>Einar</span><span>Lundqvist</span>
+  </a>
+  <div class="actions">
+    <a class="btn btn--neon" href="mailto:you@example.com">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+      Contact
+    </a>
+    <button class="btn btn--paper btn--icon" id="menu-btn" type="button" aria-expanded="false" aria-controls="menu" aria-label="Open menu">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M4 9h16M9 15h11"/></svg>
+    </button>
+  </div>
+</header>
 
-  <main>
-    <h1>Welcome to my website</h1>
-    <p>This is placeholder text. Replace it with your own content. Darnell Simons</p>
-    <button id="hello-btn">Click me</button>
-    <p id="hello-msg"></p>
-  </main>
+<nav class="menu" id="menu" aria-label="Main" hidden>
+  <a href="#work">Work</a>
+  <a href="#about">About</a>
+  <a href="mailto:you@example.com">Contact</a>
+</nav>
 
-  <footer>
-    <p>&copy; 2026 My Website</p>
-  </footer>
+<main>
+  <h1 class="sr-only">Einar Lundqvist: selected work</h1>
+  <div class="gallery" id="work">
+    <ul class="grid">
+      <!-- Keep titles short: they sit inside the notch of each card. -->
+      <li><a class="card" href="#"><div class="thumb"><img src="images/work-1.png" alt="Project one" loading="lazy" onerror="this.hidden=true"></div><p class="label"><span>Project One</span><b>2025</b></p></a></li>
+      <li><a class="card" href="#"><div class="thumb"><img src="images/work-2.png" alt="Project two" loading="lazy" onerror="this.hidden=true"></div><p class="label"><span>Project Two</span><b>2025</b></p></a></li>
+      <li><a class="card" href="#"><div class="thumb"><img src="images/work-3.png" alt="Project three" loading="lazy" onerror="this.hidden=true"></div><p class="label"><span>Project Three</span><b>2025</b></p></a></li>
+      <li><a class="card" href="#"><div class="thumb"><img src="images/work-4.png" alt="Project four" loading="lazy" onerror="this.hidden=true"></div><p class="label"><span>Project Four</span><b>2024</b></p></a></li>
+      <li><a class="card" href="#"><div class="thumb"><img src="images/work-5.png" alt="Project five" loading="lazy" onerror="this.hidden=true"></div><p class="label"><span>Project Five</span><b>2024</b></p></a></li>
+      <li><a class="card" href="#"><div class="thumb"><img src="images/work-6.png" alt="Project six" loading="lazy" onerror="this.hidden=true"></div><p class="label"><span>Project Six</span><b>2023</b></p></a></li>
+      <li><a class="card" href="#"><div class="thumb"><img src="images/work-7.png" alt="Project seven" loading="lazy" onerror="this.hidden=true"></div><p class="label"><span>Project Seven</span><b>2023</b></p></a></li>
+      <li><a class="card" href="#"><div class="thumb"><img src="images/work-8.png" alt="Project eight" loading="lazy" onerror="this.hidden=true"></div><p class="label"><span>Project Eight</span><b>2022</b></p></a></li>
+    </ul>
+  </div>
+</main>
 
-  <script src="script.js"></script>
+<footer class="outro" id="contact">
+  <div class="stage">
+    <span class="tab" aria-hidden="true"></span>
+    <div class="panel">
+      <h2 class="headline">Let’s <em>build</em><br>something <em>great.</em></h2>
+
+      <img class="portrait" src="images/portrait.png" alt="Darnell Simons" loading="lazy" onerror="this.hidden=true">
+
+      <div class="cols">
+        <nav class="links links--l" aria-label="Pages">
+          <h2>Pages</h2>
+          <a href="#top">Home</a><a href="#work">Work</a><a href="#about">About</a><a href="mailto:you@example.com">Contact</a>
+        </nav>
+        <nav class="links links--r" aria-label="Social">
+          <h2>Follow on</h2>
+          <a href="#">Instagram</a><a href="#">YouTube</a><a href="#">LinkedIn</a><a href="#">GitHub</a>
+        </nav>
+      </div>
+
+      <div class="logos" aria-label="Clients">
+        <div class="track">
+          <ul><li>Client One</li><li>Client Two</li><li>Client Three</li><li>Client Four</li><li>Client Five</li><li>Client Six</li></ul>
+          <ul aria-hidden="true"><li>Client One</li><li>Client Two</li><li>Client Three</li><li>Client Four</li><li>Client Five</li><li>Client Six</li></ul>
+        </div>
+      </div>
+
+      <a class="btn btn--neon cta" href="mailto:you@example.com">
+        Get in touch
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg>
+      </a>
+    </div>
+  </div>
+
+  <div class="legal">
+    <p>© 2026 Darnell Simons</p>
+    <nav aria-label="Legal"><a href="#">Privacy policy</a><a href="#">Terms</a></nav>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+<script src="js/script.js"></script>
 </body>
 </html>

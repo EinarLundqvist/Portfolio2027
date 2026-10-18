@@ -68,8 +68,8 @@ body.menu-open .top{position:relative;z-index:21}
 }
 .card::before,.card::after,.thumb{
   position:absolute;content:"";
-  -webkit-mask:url("/images/mask.png") center / 100% 100% no-repeat;
-          mask:url("/images/mask.png") center / 100% 100% no-repeat;
+  -webkit-mask:url("../images/mask.png") center / 100% 100% no-repeat;
+          mask:url("../images/mask.png") center / 100% 100% no-repeat;
   -webkit-mask-source-type:luminance;
   mask-mode:luminance;
 }
@@ -197,8 +197,8 @@ html.lenis,html.lenis body{height:auto}
     overflow:visible;border-radius:0;min-height:0;
     aspect-ratio:1642 / 574;
     padding-top:clamp(4rem,7vw,7rem);
-    -webkit-mask:url("/images/frame.png") center / 100% 100% no-repeat;
-            mask:url("/images/frame.png") center / 100% 100% no-repeat;
+    -webkit-mask:url("../images/frame.png") center / 100% 100% no-repeat;
+            mask:url("../images/frame.png") center / 100% 100% no-repeat;
   }
 
   /* bottom bar: the notches now come from the mask, so the bar becomes plain text on the lime */
@@ -249,8 +249,8 @@ footer.outro .legal a{font-weight:600}
   .stage::before{
     content:"";position:absolute;inset:0;
     background:var(--edge);transition:background-color .2s;
-    -webkit-mask:url("/images/frame.png") center / 100% 100% no-repeat;
-            mask:url("/images/frame.png") center / 100% 100% no-repeat;
+    -webkit-mask:url("../images/frame.png") center / 100% 100% no-repeat;
+            mask:url("../images/frame.png") center / 100% 100% no-repeat;
   }
   /* the panel shrinks by the outline thickness, so the outline shows around it */
   .panel{margin:var(--bw)}
@@ -278,8 +278,8 @@ footer.outro .legal a{font-weight:600}
   }
   .glow i{
     position:absolute;inset:0;background:var(--neon);
-    -webkit-mask:url("/images/frame.png") center / 100% 100% no-repeat;
-            mask:url("/images/frame.png") center / 100% 100% no-repeat;
+    -webkit-mask:url("../images/frame.png") center / 100% 100% no-repeat;
+            mask:url("../images/frame.png") center / 100% 100% no-repeat;
   }
 }
 ::selection{
@@ -300,12 +300,12 @@ footer.outro .legal a{font-weight:600}
   .panel::after{
     border:0;border-radius:0;background:var(--ring);
     -webkit-mask:
-      url("/images/frame.png") center / 100% 100% no-repeat,
-      url("/images/frame.png") center / calc(100% - 2 * var(--bw)) calc(100% - 2 * var(--bw)) no-repeat;
+      url("../images/frame.png") center / 100% 100% no-repeat,
+      url("../images/frame.png") center / calc(100% - 2 * var(--bw)) calc(100% - 2 * var(--bw)) no-repeat;
     -webkit-mask-composite:xor;
             mask:
-      url("/images/frame.png") center / 100% 100% no-repeat,
-      url("/images/frame.png") center / calc(100% - 2 * var(--bw)) calc(100% - 2 * var(--bw)) no-repeat;
+      url("../images/frame.png") center / 100% 100% no-repeat,
+      url("../images/frame.png") center / calc(100% - 2 * var(--bw)) calc(100% - 2 * var(--bw)) no-repeat;
             mask-composite:exclude;
   }
 }

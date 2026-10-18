@@ -20,9 +20,11 @@ window.lenis = null;
   document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !menu.hidden) { setOpen(false); btn.focus(); } });
 })();
 (function () {
-  var root = document.documentElement, ticking = false, DIST = 300; // px of scroll until the grid is fully aligned
+  var root = document.documentElement, ticking = false;
+  var START = -0.2, LENGTH = 1.05; // in screen heights: wait 0.8 screens, then align over the next 1.5
   function update() {
-    var t = Math.min(1, Math.max(0, 1 - window.scrollY / DIST));
+    var vh = window.innerHeight;
+    var t = Math.min(1, Math.max(0, 1 - (window.scrollY - START * vh) / (LENGTH * vh)));
     root.style.setProperty("--t", t.toFixed(3));
     ticking = false;
   }

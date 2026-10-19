@@ -2,8 +2,8 @@
   --bg:#0f0f0f00; --card:#121212; --line:#333; --ink:#718896;
   --neon:#F09825; --paper:#aabac5;
   --bw:2px;                              /* outline thickness */
-  --gap:clamp(.6rem,1.4vw,1.5rem);
-  --pad:clamp(.75rem,1.2vw,1.5rem);
+  --gap:clamp(1.5rem,1.4vw,1.5rem);
+  --pad:clamp(0.75rem,1.2vw,1.5rem);
   --serif:"Instrument Serif",Georgia,serif;
   --display:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;
   --sans:"DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
@@ -16,8 +16,9 @@ a{color:inherit;text-decoration:none}
 ul{list-style:none;margin:0;padding:0}
 :focus-visible{outline:3px solid var(--neon);outline-offset:3px}
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+::selection{background:var(--neon);color:#0f0f0f}
 
-/* header */
+/* ---------- header ---------- */
 .top{
   display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;
   padding:max(env(safe-area-inset-top,0px),var(--pad)) max(env(safe-area-inset-right,0px),var(--pad)) var(--pad) max(env(safe-area-inset-left,0px),var(--pad));
@@ -37,7 +38,18 @@ ul{list-style:none;margin:0;padding:0}
 .btn--icon{width:clamp(2.75rem,1.6rem + 2.6vw,4.2rem);padding:0}
 .btn:active{filter:brightness(.92)}
 
-/* menu overlay */
+/* ---------- hero title ---------- */
+.hero{
+  position:absolute;left:0;right:0;
+  margin:clamp(3rem,2vw,4rem) 0 0;padding-inline:var(--pad);
+  pointer-events:none;
+  text-align:center;text-transform:uppercase;text-wrap:balance;
+  font:700 clamp(2.6rem,1rem + 7vw,5.5rem)/.9 var(--display);letter-spacing:-.02em;
+  color:var(--paper);
+}
+.hero em{font:400 1.12em/.85 var(--serif);letter-spacing:0;color:var(--neon)}
+
+/* ---------- menu overlay ---------- */
 .menu{position:fixed;inset:0;z-index:20;background:var(--bg);display:flex;flex-direction:column;justify-content:center;gap:.5rem;padding:var(--pad) max(env(safe-area-inset-left,0px),calc(var(--pad)*2))}
 .menu[hidden]{display:none}
 .menu a{font:700 clamp(2.5rem,8vw,6rem)/1.05 var(--display);letter-spacing:-.03em;width:fit-content}
@@ -45,45 +57,53 @@ ul{list-style:none;margin:0;padding:0}
 body.menu-open{overflow:hidden}
 body.menu-open .top{position:relative;z-index:21}
 
-/* staggered gallery */
+/* ---------- staggered gallery ---------- */
 .gallery{
   container-type:inline-size;
-  padding:clamp(5rem,28vh,16rem) max(env(safe-area-inset-right,0px),var(--pad)) 0 max(env(safe-area-inset-left,0px),var(--pad));
+  padding:clamp(6rem,20vh,18rem) max(env(safe-area-inset-right,0px),var(--pad)) 0 max(env(safe-area-inset-left,0px),var(--pad));
 }
 .grid{
-  --cols:2;
+  --cols:3;
   --w:calc((100cqw - (var(--cols) - 1) * var(--gap)) / var(--cols));  /* card width */
   --shift:calc((var(--w) + var(--gap)) / 2);                           /* half-card stagger */
   display:grid;grid-template-columns:repeat(var(--cols),minmax(0,1fr));gap:var(--gap);
   padding-bottom:max(env(safe-area-inset-bottom,0px),var(--pad));
 }
-.grid>li:nth-child(even){translate:0 calc(var(--shift) * var(--t,1));will-change:translate;transition:translate .1s ease-out}
-@media (min-width:64rem){.grid{--cols:4}}
+/* side columns: half a card lower, never move */
+.grid>li:nth-child(3n+1),
+.grid>li:nth-child(3n){
+  translate:0 var(--shift);
+}
+
+/* middle column (cards 2, 5, 7): moves up half a card as you scroll,
+   so its bottom lines up with the bottom of the side columns.
+   Must stay AFTER the rule above, because card 7 also matches 3n+1. */
+.grid>li:nth-child(3n+2),
+.grid>li:nth-child(7){
+  translate:0 calc(var(--shift) * -1 * (1 - var(--t,1)));
+  will-change:translate;
+  transition:translate .1s ease-out;
+}
+.grid>li:nth-child(7){grid-column:2}
+/* closes the half-card gap left at the bottom (static, never moves) */
+.grid{margin-bottom:calc(var(--shift) * -1)}
 
 /* card: outline + fill + image all share the notched mask */
-.card{
-  --edge:var(--line);
-  position:relative;display:block;aspect-ratio:1;isolation:isolate;
-  container-type:inline-size;color:var(--ink);
-}
+.card{--edge:var(--line);position:relative;display:block;aspect-ratio:1;isolation:isolate;container-type:inline-size;}
 .card::before,.card::after,.thumb{
-  position:absolute;content:"";
+  position:absolute;
   -webkit-mask:url("../images/mask.png") center / 100% 100% no-repeat;
           mask:url("../images/mask.png") center / 100% 100% no-repeat;
   -webkit-mask-source-type:luminance;
   mask-mode:luminance;
 }
+.card::before,.card::after{content:""}
 .card::before{inset:0;background:var(--edge);transition:background-color .2s}   /* outline layer */
 .card::after{inset:var(--bw);background:var(--card)}                              /* fill layer, inset = outline */
-.thumb{
-  inset:var(--bw);z-index:1;display:grid;place-items:center;
-  padding:0;
-}
+.thumb{inset:var(--bw);z-index:1;display:grid;place-items:center}
 .thumb img{width:100%;height:100%;object-fit:cover;transition:transform .35s}
 .label{
-  position:absolute;z-index:2;
-  right:3.0cqw;
-  bottom:0.9cqw;
+  position:absolute;z-index:2;right:3cqw;bottom:.9cqw;
   max-width:46cqw;margin:0;
   display:flex;gap:.55em;align-items:baseline;white-space:nowrap;
   font:500 clamp(.7rem,3.7cqw,1.05rem)/1 var(--sans);
@@ -97,37 +117,57 @@ body.menu-open .top{position:relative;z-index:21}
   .card:hover{--edge:var(--neon)}
   .card:hover .thumb img{transform:scale(1.04)}
 }
-@media (prefers-reduced-motion:reduce){
-  html{scroll-behavior:auto}
-  .card::before,.thumb img{transition:none}
-}
-/* ---------- outro section ---------- */
+
+/* ---------- outro (phone / tablet first) ---------- */
 .outro{
   --r:clamp(1rem,2vw,1.75rem);
   --m:clamp(.6rem,1.2vw,1.1rem);
   --tab-h:clamp(1.3rem,2.6vw,2.4rem);
   --bump:clamp(1rem,1.6vw,1.5rem);
-  --bar-h:clamp(2rem,3vw,1rem);
+  --bar-h:2rem;
   --panel:#262a1f; --olive:#a5702a;
   position:relative;
   margin-top:clamp(2rem,6vw,5rem);
-  padding:calc(var(--tab-h) + var(--m)) max(var(--m),env(safe-area-inset-right,0px)) env(safe-area-inset-bottom,0px) max(var(--m),env(safe-area-inset-left,0px));
-  background:linear-gradient(var(--bg) 10rem,var(--neon) 45rem);
+  padding:calc(var(--tab-h) + var(--m)) max(var(--m),env(safe-area-inset-right,0px)) max(env(safe-area-inset-bottom,0px),2rem) max(var(--m),env(safe-area-inset-left,0px));
+  background:linear-gradient(var(--bg) 5rem,var(--neon) 45rem);
 }
 .stage{position:relative}
 
 /* top tab with curved shoulders */
 .tab{position:absolute;left:50%;top:calc(-1 * var(--tab-h));translate:-50% 0;width:clamp(9rem,26vw,24rem);height:calc(var(--tab-h) + 1px);background:var(--panel);border-radius:calc(var(--tab-h) * .8) calc(var(--tab-h) * .8) 0 0}
 .tab::before,.tab::after{content:"";position:absolute;bottom:0;width:var(--tab-h);height:var(--tab-h)}
-.tab::before{right:100%;background:radial-gradient(circle at 0 0,transparent calc(var(--tab-h) - .5px),var(--panel) var(--tab-h))}
-.tab::after{left:100%;background:radial-gradient(circle at 100% 0,transparent calc(var(--tab-h) - .5px),var(--panel) var(--tab-h))}
+.tab::before{right:calc(100% - .4rem);background:radial-gradient(circle at 0 0,transparent calc(var(--tab-h) - .5px),var(--panel) var(--tab-h))}
+.tab::after{left:calc(100% - .4rem);background:radial-gradient(circle at 100% 0,transparent calc(var(--tab-h) - .5px),var(--panel) var(--tab-h))}
 
 .panel{
+  --ring:#4b5236;                         /* outline color */
   position:relative;overflow:hidden;border-radius:var(--r);color:var(--paper);text-align:center;
   display:flex;flex-direction:column;align-items:center;gap:clamp(1.25rem,3vw,2rem);
   padding:clamp(2rem,6vw,4.5rem) var(--pad) 0;
-  background:var(--panel) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 800' fill='none' stroke='%23d9ff00' stroke-opacity='.09' stroke-width='1.5'%3E%3Cpath d='M80 400C40 240 200 100 400 120s330 120 320 280-150 290-330 280S110 540 80 400z'/%3E%3Cpath d='M160 400C140 290 250 200 400 210s240 90 230 190-110 210-240 200S170 480 160 400z'/%3E%3Cpath d='M240 400c-10-70 70-130 160-120s150 60 140 120-80 130-160 120-130-50-140-120z'/%3E%3C/svg%3E") center 55% / min(130%,70rem) auto no-repeat;
+  background:var(--panel);
 }
+.panel::after{                            /* plain rounded outline */
+  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+  border-radius:inherit;border:var(--bw) solid var(--ring);
+}
+.panel{isolation:isolate}   /* keeps the lines behind the content but above the panel color */
+
+.rays{
+  position:absolute;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;
+  --fall:clamp(2.5rem,5vw,7rem);
+  -webkit-mask:
+    linear-gradient(to right,#000,transparent var(--fall)),
+    linear-gradient(to left,#000,transparent var(--fall)),
+    linear-gradient(to bottom,#000,transparent var(--fall)),
+    linear-gradient(to top,#000,transparent var(--fall));
+          mask:
+    linear-gradient(to right,#000,transparent var(--fall)),
+    linear-gradient(to left,#000,transparent var(--fall)),
+    linear-gradient(to bottom,#000,transparent var(--fall)),
+    linear-gradient(to top,#000,transparent var(--fall));
+}
+.rays line{stroke:color-mix(in srgb,var(--neon) 22%,transparent);stroke-width:2}
+
 .headline{margin:0;font:700 clamp(2.3rem,1rem + 6.4vw,5.5rem)/.95 var(--display);letter-spacing:-.02em;text-transform:uppercase;text-wrap:balance}
 .headline em{font:400 1.12em/.85 var(--serif);letter-spacing:0;color:var(--olive)}
 .portrait{display:block;width:min(78%,22rem);height:auto}
@@ -145,130 +185,60 @@ body.menu-open .top{position:relative;z-index:21}
 @keyframes outro-slide{to{transform:translateX(-50%)}}
 .cta{margin-bottom:clamp(1.25rem,3vw,2rem)}
 
-/* bottom bar with notched corners */
-.legal{display:flex;justify-content:space-between;align-items:flex-start;min-height:var(--bar-h);font:500 .8rem/1 var(--sans);color:#0f0f0f}
+
+/* bottom bar: two lime tabs with notched corners */
+.legal{display:flex;justify-content:space-between;align-items:flex-start;min-height:var(--bar-h);font:600 1rem/1 var(--sans);color:#0f0f0f}
 .legal>*{position:relative;z-index:3;margin:calc(-1 * var(--bump)) 0 0;padding-top:var(--bump);height:calc(var(--bump) + var(--bar-h));display:flex;align-items:center;gap:1.25rem;background:var(--neon)}
 .legal>*::after{content:"";position:absolute;top:0;width:var(--bump);height:var(--bump)}
-.legal p{margin-block:calc(-1 * var(--bump)) 0;padding-right:1.25rem}
+.legal p{margin:0;padding-right:1.25rem}
 .legal p::after{left:100%;background:radial-gradient(circle at 100% 0,transparent calc(var(--bump) - .5px),var(--neon) var(--bump))}
 .legal nav{padding-left:1.25rem}
 .legal nav::after{right:100%;background:radial-gradient(circle at 0 0,transparent calc(var(--bump) - .5px),var(--neon) var(--bump))}
-.legal a{font-weight:700;text-transform:uppercase}
+.legal a{text-transform:uppercase}
 .legal a:hover{text-decoration:underline}
 
-/* desktop: headline on top, helmet overlapping it, links either side */
+/* ---------- desktop: headline on top, helmet overlapping it, links either side ---------- */
 @media (min-width:48rem){
   .panel{display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:auto 1fr auto auto;align-items:start;gap:0 1rem;min-height:clamp(40rem,48vw,62rem)}
   .headline{grid-column:1/-1;grid-row:1}
   .cols{display:contents}
-  .links{grid-row:2;align-self:center;justify-self:center;position:relative;z-index:2}
-  .links--l{grid-column:1}.links--r{grid-column:3}
-  .portrait{position:absolute;left:50%;bottom:0;translate:-50% 0;width:clamp(16rem,30vw,34rem);max-height:80%;object-fit:contain;object-position:bottom;z-index:1}
+
+  /* link columns: centered on the whole panel, not just the row under the headline */
+  .links{position:absolute;top:50%;z-index:2}
+  .links--l{left:16.67%;translate:-50% -50%}
+  .links--r{left:83.33%;translate:-50% -50%}
+
+  .portrait{
+  --px:0rem;   /* + moves right, - moves left */
+  --py:3.5rem;   /* + moves up,    - moves down */
+  position:absolute;
+  left:50%;
+  bottom:var(--py);
+  translate:calc(-50% + var(--px)) 0;
+  width:clamp(16rem,30vw,34rem);
+  max-height:80%;
+  object-fit:contain;object-position:bottom;
+  z-index:1;
+  }
   .logos{grid-column:1/-1;grid-row:3;align-self:auto}
+
+  /* button: moved out from under the portrait, to the right column below "Follow on" */
   .cta{grid-column:1/-1;grid-row:4;justify-self:center;position:relative;z-index:2}
 }
-@media (prefers-reduced-motion:reduce){
-  .track{animation:none}
-  .logos{overflow-x:auto}
-}
-html.lenis,html.lenis body{height:auto}
-.lenis.lenis-smooth{scroll-behavior:auto !important}
-.lenis.lenis-stopped{overflow:hidden}
-@media (min-width:64rem) and (min-aspect-ratio:3/2){
-  .gallery{
-    padding-left:max(env(safe-area-inset-left,0px),clamp(4rem,7vw,20rem));
-    padding-right:max(env(safe-area-inset-right,0px),clamp(4rem,7vw,20rem));
-  }
-    footer.outro{
-  --lift:5rem;   /* how much higher the gradient starts */
-  margin-top:calc(clamp(2rem,6vw,5rem) - var(--lift));
-  padding-top:calc(var(--tab-h) + var(--m) + var(--lift));
-  }
-  @media (min-width:64rem){
-    footer.outro{padding-top:calc(var(--m) + var(--lift))}
-  }
-}
-/* ---------- outro: use frame.png on desktop ---------- */
+
+/* ---------- large screens: panel uses frame.png, with outline + glow ---------- */
 @media (min-width:64rem){
   .outro{padding-top:var(--m)}
   .tab{display:none}
 
-  .panel{
-    overflow:visible;border-radius:0;min-height:0;
-    aspect-ratio:1642 / 574;
-    padding-top:clamp(4rem,7vw,7rem);
-    -webkit-mask:url("../images/frame.png") center / 100% 100% no-repeat;
-            mask:url("../images/frame.png") center / 100% 100% no-repeat;
-  }
-
-  /* bottom bar: the notches now come from the mask, so the bar becomes plain text on the lime */
-  .legal{position:relative;z-index:3;margin-top:calc(-1 * var(--bar-h));align-items:center;padding-inline:1.25rem}
-  .legal>*,.legal p{margin:0;padding:0;height:auto;background:none}
-  .legal>*::after{display:none}
-}
-footer.outro{
-  padding-bottom:max(env(safe-area-inset-bottom,0px),2rem);
-}
-
-
-footer.outro .legal p,
-footer.outro .legal a{
-  font-size:1rem;
-  line-height:1;          /* same line height, so both sides sit on the same line */
-  letter-spacing:1;
-}
-footer.outro .legal p{font-weight:600;margin:0}
-footer.outro .legal a{font-weight:600}
-
-/* desktop: both groups get the same height and the same edge distance */
-@media (min-width:64rem){
-  footer.outro .legal{--legal-x:2rem;padding-inline:var(--legal-x)}
-  footer.outro .legal p,
-  footer.outro .legal nav{display:flex;align-items:center;height:var(--bar-h)}
-  footer.outro .legal nav{gap:1.5rem}
-}
-/* desktop: padding for the bottom bar text */
-@media (min-width:64rem){
-  footer.outro .legal{
-    padding-inline:1.25rem;
-  }
-}
-
-
-/* phone and tablet: padding inside the two lime tabs */
-@media (max-width:63.99rem){
-  footer.outro .legal p{padding-right:1.25rem}
-  footer.outro .legal nav{padding-left:1.25rem}
-  footer.outro .legal>*{gap:1.25rem}
-}
-/* ---------- outro panel: outlined frame, same as the work cards ---------- */
-.stage{--edge:var(--line)}
-
-@media (min-width:64rem){
-  /* outline layer: the frame shape filled with the edge color, sitting behind the panel */
-  .stage::before{
-    content:"";position:absolute;inset:0;
-    background:var(--edge);transition:background-color .2s;
-    -webkit-mask:url("../images/frame.png") center / 100% 100% no-repeat;
-            mask:url("../images/frame.png") center / 100% 100% no-repeat;
-  }
-  /* the panel shrinks by the outline thickness, so the outline shows around it */
-  .panel{margin:var(--bw)}
-}
-
-/* phone and tablet: the panel has no mask there, so use a plain inset outline */
-@media (max-width:63.99rem){
-  .panel{box-shadow:inset 0 0 0 var(--bw) var(--line)}
-}
-@media (min-width:64rem) and (min-aspect-ratio:3/2){
-  footer.outro{
-    padding-left:max(env(safe-area-inset-left,0px),clamp(4rem,7vw,20rem));
-    padding-right:max(env(safe-area-inset-right,0px),clamp(4rem,7vw,20rem));
-  }
-}
-/* ---------- outro: glow that fades with distance from the frame's silhouette ---------- */
-@media (min-width:64rem){
   .stage{isolation:isolate}
+  .stage::before,.glow i,.panel{
+    -webkit-mask:url("../images/frame.png") center / 100% 100% no-repeat;
+            mask:url("../images/frame.png") center / 100% 100% no-repeat;
+  }
+  /* outline layer: frame shape in the edge color, behind the panel */
+  .stage::before{content:"";position:absolute;inset:0;background:var(--line)}
+  /* glow that fades with distance from the frame's silhouette */
   .glow{
     position:absolute;inset:0;z-index:-1;pointer-events:none;
     filter:
@@ -276,27 +246,15 @@ footer.outro .legal a{font-weight:600}
       drop-shadow(0 0 1.5rem var(--neon))
       drop-shadow(0 0 3rem var(--neon));
   }
-  .glow i{
-    position:absolute;inset:0;background:var(--neon);
-    -webkit-mask:url("../images/frame.png") center / 100% 100% no-repeat;
-            mask:url("../images/frame.png") center / 100% 100% no-repeat;
+  .glow i{position:absolute;inset:0;background:var(--neon)}
+
+  /* margin = outline thickness, so the outline layer shows around the panel */
+  .panel{
+    overflow:visible;border-radius:0;min-height:0;margin:var(--bw);
+    aspect-ratio:1642 / 574;
+    padding-top:clamp(4rem,7vw,7rem);
   }
-}
-::selection{
-  background:var(--neon);
-  color:#0f0f0f;
-}
-
-
-/* ---------- outro panel: inner outline, same idea as the work cards ---------- */
-.panel{--ring:#4b5236}                    /* outline color (hover turns it neon) */
-
-.panel::after{                            /* phone/tablet: plain rounded outline */
-  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
-  border-radius:inherit;border:var(--bw) solid var(--ring);
-}
-
-@media (min-width:64rem){                 /* desktop: outline follows the frame.png shape */
+  /* inner ring follows the frame shape */
   .panel::after{
     border:0;border-radius:0;background:var(--ring);
     -webkit-mask:
@@ -308,4 +266,36 @@ footer.outro .legal a{font-weight:600}
       url("../images/frame.png") center / calc(100% - 2 * var(--bw)) calc(100% - 2 * var(--bw)) no-repeat;
             mask-composite:exclude;
   }
+
+  /* bottom bar: the notches now come from the mask, so it becomes plain text on the lime */
+  .legal{position:relative;z-index:3;margin-top:calc(-1 * var(--bar-h));align-items:center;padding-inline:1.25rem}
+  .legal p,.legal nav{margin:0;padding:0;height:var(--bar-h);background:none}
+  .legal>*::after{display:none}
+  .legal nav{gap:1.5rem}
+}
+
+/* wide screens: more side space, footer pulled up under the gallery */
+@media (min-width:64rem) and (min-aspect-ratio:3/2){
+  .top,.gallery,.outro{
+    padding-left:max(env(safe-area-inset-left,0px),clamp(4rem,12vw,20rem));
+    padding-right:max(env(safe-area-inset-right,0px),clamp(4rem,12vw,20rem));
+  }
+  .outro{
+    --lift:5rem;   /* how much higher the gradient starts */
+    margin-top:clamp(0.5rem,2vw,1.5rem);
+    padding-top:calc(var(--m) + var(--lift));
+  }
+}
+
+/* ---------- smooth scroll (Lenis) ---------- */
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto !important}
+.lenis.lenis-stopped{overflow:hidden}
+
+/* ---------- reduced motion ---------- */
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .card::before,.thumb img{transition:none}
+  .track{animation:none}
+  .logos{overflow-x:auto}
 }

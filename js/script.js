@@ -34,29 +34,129 @@ window.lenis = null;
   update();
 })();
 (function () {
-  var panel = document.querySelector(".panel");
-  var NS = "http://www.w3.org/2000/svg";
-  var svg = document.createElementNS(NS, "svg");
-  svg.setAttribute("class", "rays");
-  svg.setAttribute("aria-hidden", "true");
-  panel.prepend(svg);
+  var img = document.querySelector(".portrait");
+  if (!img || img.tagName !== "IMG") return;
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-  var GAP = 25; // px between lines along the edge
-  function draw() {
-    var w = panel.clientWidth, h = panel.clientHeight;
-    var cx = w / 2, cy = h / 2, len = Math.min(w, h) * 0.6, per = 2 * (w + h), out = "";
-    for (var d = GAP / 2; d < per; d += GAP) {
-      var x, y;
-      if (d < w) { x = d; y = 0; }
-      else if (d < w + h) { x = w; y = d - w; }
-      else if (d < 2 * w + h) { x = w - (d - w - h); y = h; }
-      else { x = 0; y = h - (d - 2 * w - h); }
-      var dx = cx - x, dy = cy - y, m = Math.hypot(dx, dy);
-      out += '<line x1="' + x.toFixed(1) + '" y1="' + y.toFixed(1) +
-             '" x2="' + (x + dx / m * len).toFixed(1) + '" y2="' + (y + dy / m * len).toFixed(1) + '"/>';
-    }
-    svg.innerHTML = out;
+  var HEIGHT_SRC = "images/portraitHeight.png";
+var STRENGTH = -0.0125;
+var FOCUS    = 0.8;
+var SMOOTH   = 0.08;
+var Y_SCALE  = 0.5;
+var ANCHOR   = 0.1;
+var TEXT_SHIFT = 2;
+
+  var VS = "attribute vec2 p;varying vec2 v;void main(){v=p*.5+.5;gl_Position=vec4(p,0.,1.);}";
+var FS = "precision highp float;varying vec2 v;" +
+  "uniform sampler2D uColor,uHeight;uniform vec2 uMouse,uSize;uniform float uS,uF;" +
+  // bilinear filtering done by hand, on premultiplied values
+  "vec4 pm(vec2 uv){" +
+  "  vec2 p=uv*uSize-.5;vec2 i=floor(p);vec2 f=p-i;" +
+  "  vec4 a=texture2D(uColor,(i+vec2(.5,.5))/uSize);" +
+  "  vec4 b=texture2D(uColor,(i+vec2(1.5,.5))/uSize);" +
+  "  vec4 c=texture2D(uColor,(i+vec2(.5,1.5))/uSize);" +
+  "  vec4 d=texture2D(uColor,(i+vec2(1.5,1.5))/uSize);" +
+  "  a.rgb*=a.a;b.rgb*=b.a;c.rgb*=c.a;d.rgb*=d.a;" +
+  "  return mix(mix(a,b,f.x),mix(c,d,f.x),f.y);" +
+  "}" +
+  "void main(){" +
+  "  float m=smoothstep(0.,float(" + ANCHOR + "),v.y);" +
+  "  vec2 uv=v;" +
+  "  for(int i=0;i<3;i++){float h=texture2D(uHeight,uv).r;uv=v+uMouse*(h-uF)*uS*m;}" +
+  "  gl_FragColor=pm(uv);" +
+  "}";
+
+  function load(src) {
+    return new Promise(function (res, rej) {
+      var i = new Image();
+      i.onload = function () { res(i); };
+      i.onerror = rej;
+      i.src = src;
+    });
   }
-  draw();
-  new ResizeObserver(draw).observe(panel);
+
+  Promise.all([load(img.src), load(HEIGHT_SRC)]).then(function (a) {
+    var color = a[0], height = a[1];
+    var canvas = document.createElement("canvas");
+    canvas.width = color.naturalWidth;
+    canvas.height = color.naturalHeight;
+    var gl = canvas.getContext("webgl", { alpha: true, premultipliedAlpha: true });
+    if (!gl) return;
+
+    function sh(type, src) {
+      var s = gl.createShader(type);
+      gl.shaderSource(s, src);
+      gl.compileShader(s);
+      return s;
+    }
+    var prog = gl.createProgram();
+    gl.attachShader(prog, sh(gl.VERTEX_SHADER, VS));
+    gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, FS));
+    gl.linkProgram(prog);
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return;
+    gl.useProgram(prog);
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+    var loc = gl.getAttribLocation(prog, "p");
+    gl.enableVertexAttribArray(loc);
+    gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+
+    function tex(unit, image, nearest) {
+      gl.activeTexture(gl.TEXTURE0 + unit);
+      gl.bindTexture(gl.TEXTURE_2D, gl.createTexture());
+      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+      gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);      // keep the exact edge colors
+      gl.pixelStorei(gl.UNPACK_COLORSPACE_CONVERSION_WEBGL, gl.NONE); // no color-profile shifts
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+      var f = nearest ? gl.NEAREST : gl.LINEAR;
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, f);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, f);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    }
+    tex(0, color, true);    // portrait: nearest, the shader does the blending
+    tex(1, height, false);  // height map: normal smooth filtering
+    gl.uniform1i(gl.getUniformLocation(prog, "uColor"), 0);
+    gl.uniform1i(gl.getUniformLocation(prog, "uHeight"), 1);
+    gl.uniform1f(gl.getUniformLocation(prog, "uS"), STRENGTH);
+    gl.uniform1f(gl.getUniformLocation(prog, "uF"), FOCUS);
+    gl.uniform2f(gl.getUniformLocation(prog, "uSize"), color.naturalWidth, color.naturalHeight);
+    var uMouse = gl.getUniformLocation(prog, "uMouse");
+    var headline = document.querySelector(".headline");
+    var dir = STRENGTH < 0 ? -1 : 1;
+
+    var tx = 0, ty = 0, cx = 0, cy = 0, raf = 0;
+    function draw() {
+      gl.viewport(0, 0, canvas.width, canvas.height);
+      gl.clearColor(0, 0, 0, 0);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+      gl.uniform2f(uMouse, cx, cy);
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+      if (headline) headline.style.translate = (dir * cx * TEXT_SHIFT) + "px " + (-dir * cy * TEXT_SHIFT) + "px";
+    }
+    function tick() {
+      cx += (tx - cx) * SMOOTH;
+      cy += (ty - cy) * SMOOTH;
+      draw();
+      raf = (Math.abs(tx - cx) + Math.abs(ty - cy) > 0.0005) ? requestAnimationFrame(tick) : 0;
+    }
+    function kick() { if (!raf) raf = requestAnimationFrame(tick); }
+
+    draw(); // first frame; if the texture upload failed, we never get here
+
+    canvas.className = img.className;
+    canvas.setAttribute("role", "img");
+    canvas.setAttribute("aria-label", img.alt || "");
+    img.parentNode.insertBefore(canvas, img);
+    img.className = "";
+    img.style.display = "none";
+
+  addEventListener("pointermove", function (e) {
+    tx = (e.clientX / innerWidth) * 2 - 1;
+    ty = -((e.clientY / innerHeight) * 2 - 1) * Y_SCALE;
+    kick();
+  }, { passive: true });
+    document.documentElement.addEventListener("mouseleave", function () { tx = 0; ty = 0; kick(); });
+  }).catch(function () { /* keep the normal image */ });
 })();

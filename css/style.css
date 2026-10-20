@@ -21,6 +21,30 @@ body::after{
   background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='.67 .67 .67 0 -.5 .67 .67 .67 0 -.5 .67 .67 .67 0 -.5 0 0 0 0 1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E") 0 0 / 260px 260px;
 }
 
+/* ---------- background lightning lines ---------- */
+.bolts{
+  --bolt:.9;                                  /* strength: 0 = off, 1 = full */
+  position:absolute;top:0;left:0;width:100%;height:auto;
+  z-index:-1;pointer-events:none;
+  opacity:var(--bolt);
+  filter:drop-shadow(0 0 .35rem var(--neon)) drop-shadow(0 0 1rem color-mix(in srgb,var(--neon) 60%,transparent));
+}
+.bolts path{fill:none;stroke:var(--neon);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.bolts{overflow:visible}                      /* lets the part above the page exist */
+.bolts path{
+  stroke-dasharray:1;stroke-dashoffset:1;     /* fully undrawn */
+  animation:bolt-draw 1.4s cubic-bezier(.3,.6,.2,1) forwards;
+}
+.bolts path:nth-child(1){animation-duration:2s}                 /* left line */
+.bolts path:nth-child(2){animation-delay:.2s}                   /* right trunk */
+.bolts path:nth-child(3),
+.bolts path:nth-child(4){animation-delay:1.5s;animation-duration:1.1s}   /* branches start when the trunk reaches the fork */
+@keyframes bolt-draw{to{stroke-dashoffset:0}}
+
+@media (prefers-reduced-motion:reduce){
+  .bolts path{animation:none;stroke-dashoffset:0}
+}
+
 a{color:inherit;text-decoration:none}
 ul{list-style:none;margin:0;padding:0}
 :focus-visible{outline:3px solid var(--neon);outline-offset:3px}
@@ -46,6 +70,7 @@ ul{list-style:none;margin:0;padding:0}
 .btn--paper{background:var(--paper);color:#0f0f0f}
 .btn--icon{width:clamp(2.75rem,1.6rem + 2.6vw,4.2rem);padding:0}
 .btn:active{filter:brightness(.92)}
+
 
 /* ---------- hero title ---------- */
 .hero{
@@ -131,6 +156,36 @@ body.menu-open .top{position:relative;z-index:21}
   .card:hover{--edge:var(--neon)}
   .card:hover .thumb img{transform:scale(1.04)}
 }
+/* ---------- hover: upper frame slides up, title slides out above the hovered frame ---------- */
+.grid{--slide:var(--gap)}                       /* how far the upper frame moves up */
+
+.grid>li{position:relative;isolation:isolate}   /* keeps the title behind its own card */
+
+.grid>li::after{
+  content:attr(data-title);
+  position:absolute;left:0;right:0;bottom:100%;
+  height:calc(var(--gap) + var(--slide));       /* the space the upper frame leaves */
+  display:grid;place-items:center;text-align:center;
+  z-index:-1;                                   /* behind the card, so it appears from underneath */
+  font:700 clamp(.85rem,.7rem + .5vw,1.15rem)/1 var(--display);
+  letter-spacing:.06em;text-transform:uppercase;color:var(--paper);
+  translate:0 100%;opacity:0;                   /* resting: tucked behind the card */
+  transition:translate .45s cubic-bezier(.22,1,.36,1),opacity .3s;
+}
+.card{transition:translate .45s cubic-bezier(.22,1,.36,1)}
+
+@media (hover:hover){
+  /* the hovered frame's title slides up out from underneath it */
+  .grid>li:hover::after{translate:0 0;opacity:1;transition-delay:.05s}
+
+  /* the frame above slides up to make room (only frames that have one above them) */
+  .grid>li:nth-child(1):has(~ li:nth-child(4):hover) .card,
+  .grid>li:nth-child(2):has(~ li:nth-child(5):hover) .card,
+  .grid>li:nth-child(3):has(~ li:nth-child(6):hover) .card,
+  .grid>li:nth-child(5):has(~ li:nth-child(7):hover) .card{
+    translate:0 calc(var(--slide) * -1);
+  }
+}
 
 /* ---------- outro (phone / tablet first) ---------- */
 .outro{
@@ -143,7 +198,7 @@ body.menu-open .top{position:relative;z-index:21}
   position:relative;
   margin-top:clamp(2rem,6vw,5rem);
   padding:calc(var(--tab-h) + var(--m)) max(var(--m),env(safe-area-inset-right,0px)) max(env(safe-area-inset-bottom,0px),2rem) max(var(--m),env(safe-area-inset-left,0px));
-  background:linear-gradient(var(--bg) 5rem,var(--neon) 45rem);
+  /*background:linear-gradient(var(--bg) 35rem,var(--neon) 45rem);*/
   z-index:2;
 }
 .stage{position:relative}
@@ -175,22 +230,6 @@ body.menu-open .top{position:relative;z-index:21}
 }
 .portrait{position:relative;z-index:1}
 
-.rays{
-  position:absolute;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;
-  --fall:clamp(2.5rem,5vw,7rem);
-  -webkit-mask:
-    linear-gradient(to right,#000,transparent var(--fall)),
-    linear-gradient(to left,#000,transparent var(--fall)),
-    linear-gradient(to bottom,#000,transparent var(--fall)),
-    linear-gradient(to top,#000,transparent var(--fall));
-          mask:
-    linear-gradient(to right,#000,transparent var(--fall)),
-    linear-gradient(to left,#000,transparent var(--fall)),
-    linear-gradient(to bottom,#000,transparent var(--fall)),
-    linear-gradient(to top,#000,transparent var(--fall));
-}
-.rays line{stroke:color-mix(in srgb,var(--neon) 22%,transparent);stroke-width:2}
-
 .headline{
   margin:0;
   font:700 clamp(2.3rem,1rem + 6.4vw,5.5rem)/.95 var(--display);
@@ -200,6 +239,7 @@ body.menu-open .top{position:relative;z-index:21}
 }
 .headline em{font:400 1.12em/.85 var(--serif);letter-spacing:0;color:var(--olive)}
 .portrait{display:block;width:min(78%,22rem);height:auto}
+.portrait{filter:drop-shadow(0 .4rem .9rem rgb(0 0 0 / .45))}
 
 .cols{display:grid;grid-template-columns:1fr;gap:2rem;width:100%}
 .links{display:grid;gap:1rem;align-content:start;justify-items:center}
@@ -207,14 +247,15 @@ body.menu-open .top{position:relative;z-index:21}
 
 .skill-list{
   display:grid;grid-template-columns:repeat(2,auto);
-  gap:.9rem clamp(1.25rem,3vw,2.75rem);justify-content:center;text-align:left;
+  gap:1.5rem clamp(1.25rem,3vw,2.75rem);   /* row gap (was .9rem), column gap unchanged */
+  justify-content:center;text-align:left;
 }
 .skill-list li{
   display:flex;align-items:center;gap:.65rem;white-space:nowrap;
   font:500 clamp(.9rem,.75rem + .45vw,1.15rem)/1.1 var(--display);color:var(--paper);
 }
 .ico{
-  flex:none;width:2.5em;height:2.5em;display:grid;place-items:center;
+  flex:none;width:2.8em;height:2.8em;display:grid;place-items:center;   /* was 2.5em */
   border-radius:.45em;background:var(--c,#444);color:#fff;
   font:700 .7em/1 var(--display);letter-spacing:-.02em;
 }
@@ -227,10 +268,11 @@ img.ico{display:block;background:none;border-radius:0;object-fit:contain}
 @keyframes outro-slide{to{transform:translateX(-50%)}}
 .cta{margin-bottom:clamp(1.25rem,3vw,2rem)}
 .cta{height:clamp(2.25rem,1.3rem + 2vw,3rem)}
+.cta{min-width:20rem}
 
 
 /* bottom bar: two lime tabs with notched corners */
-.legal{display:flex;justify-content:space-between;align-items:flex-start;min-height:var(--bar-h);font:600 1rem/1 var(--sans);color:#0f0f0f}
+.legal{display:flex;justify-content:space-between;align-items:flex-start;min-height:var(--bar-h);font:600 1rem/1 var(--sans);color:color-mix(in srgb,var(--ink)90%,transparent)}
 .legal>*{position:relative;z-index:3;margin:calc(-1 * var(--bump)) 0 0;padding-top:var(--bump);height:calc(var(--bump) + var(--bar-h));display:flex;align-items:center;gap:1.25rem;background:var(--neon)}
 .legal>*::after{content:"";position:absolute;top:0;width:var(--bump);height:var(--bump)}
 .legal p{margin:0;padding-right:1.25rem}
@@ -239,6 +281,7 @@ img.ico{display:block;background:none;border-radius:0;object-fit:contain}
 .legal nav::after{right:100%;background:radial-gradient(circle at 0 0,transparent calc(var(--bump) - .5px),var(--neon) var(--bump))}
 .legal a{text-transform:uppercase}
 .legal a:hover{text-decoration:underline}
+.legal{text-shadow:-px -1px 2px rgb(0 0 0 / .15)}
 
 /* ---------- desktop: headline on top, helmet overlapping it, links either side ---------- */
 @media (min-width:48rem){
@@ -262,7 +305,7 @@ img.ico{display:block;background:none;border-radius:0;object-fit:contain}
   .links--r{left:83.33%;translate:-50% -50%}
 
   .portrait{
-  --px:0rem;   /* + moves right, - moves left */
+  --px:0.5rem;   /* + moves right, - moves left */
   --py:3.5rem;   /* + moves up,    - moves down */
   position:absolute;
   left:50%;
@@ -286,37 +329,40 @@ img.ico{display:block;background:none;border-radius:0;object-fit:contain}
 
   .stage{isolation:isolate}
   .stage::before,.glow i,.panel{
-    -webkit-mask:url("../images/frame.png") center / 100% 100% no-repeat;
-            mask:url("../images/frame.png") center / 100% 100% no-repeat;
+    -webkit-mask:url("../images/frame3.png") center / 100% 100% no-repeat;
+            mask:url("../images/frame3.png") center / 100% 100% no-repeat;
   }
   /* outline layer: frame shape in the edge color, behind the panel */
   .stage::before{content:"";position:absolute;inset:var(--bw);background:var(--line)}
   /* glow that fades with distance from the frame's silhouette */
   .glow{
+    --glow:1;          /* strength: 0 = off, 1 = full */
+    --glow-size:0.5;     /* spread: 0.5 = tight, 2 = wide */
     position:absolute;inset:0;z-index:-1;pointer-events:none;
+    opacity:var(--glow);
     filter:
-      drop-shadow(0 0 .75rem var(--neon))
-      drop-shadow(0 0 1.5rem var(--neon))
-      drop-shadow(0 0 3rem var(--neon));
+      drop-shadow(0 0 calc(.75rem * var(--glow-size)) var(--neon))
+      drop-shadow(0 0 calc(1.5rem * var(--glow-size)) var(--neon))
+      drop-shadow(0 0 calc(3rem * var(--glow-size)) var(--neon));
   }
   .glow i{position:absolute;inset:0;background:var(--neon)}
 
   /* margin = outline thickness, so the outline layer shows around the panel */
   .panel{
     overflow:visible;border-radius:0;min-height:0;margin:var(--bw);
-    aspect-ratio:1642 / 574;
+    aspect-ratio:1645 / 750;
     padding-top:clamp(4rem,7vw,7rem);
   }
   /* inner ring follows the frame shape */
   .panel::after{
     border:0;border-radius:0;background:var(--ring);
     -webkit-mask:
-      url("../images/frame.png") center / 100% 100% no-repeat,
-      url("../images/frame.png") center / calc(100% - 2 * var(--bw)) calc(100% - 2 * var(--bw)) no-repeat;
+      url("../images/frame3.png") center / 100% 100% no-repeat,
+      url("../images/frame3.png") center / calc(100% - 2 * var(--bw)) calc(100% - 2 * var(--bw)) no-repeat;
     -webkit-mask-composite:xor;
             mask:
-      url("../images/frame.png") center / 100% 100% no-repeat,
-      url("../images/frame.png") center / calc(100% - 2 * var(--bw)) calc(100% - 2 * var(--bw)) no-repeat;
+      url("../images/frame3.png") center / 100% 100% no-repeat,
+      url("../images/frame3.png") center / calc(100% - 2 * var(--bw)) calc(100% - 2 * var(--bw)) no-repeat;
             mask-composite:exclude;
   }
 
@@ -327,6 +373,15 @@ img.ico{display:block;background:none;border-radius:0;object-fit:contain}
   .legal nav{gap:1.5rem}
   .legal p,.legal nav{translate:0.5rem .3rem}
 }
+.disclaimer{
+  margin:1.25rem auto 0;max-width:40rem;padding-inline:var(--pad);
+  text-align:center;text-wrap:balance;
+  font:400 .62rem/1.6 var(--sans);
+  letter-spacing:.02em;
+  color:color-mix(in srgb,var(--ink) 32%,transparent);   /* was 45% */
+}
+.disclaimer:hover{color:color-mix(in srgb,var(--ink) 80%,transparent)}
+
 
 /* wide screens: more side space, footer pulled up under the gallery */
 @media (min-width:64rem) and (min-aspect-ratio:3/2){
@@ -361,4 +416,26 @@ html.lenis,html.lenis body{height:auto}
   .card::before,.thumb img{transition:none}
   .track{animation:none}
   .logos{overflow-x:auto}
+  .card,.grid>li::after{transition:none}
+}
+
+
+html::-webkit-scrollbar{width:14px}
+html::-webkit-scrollbar-track{background:transparent}
+
+html::-webkit-scrollbar-thumb{
+  /* rest: 6px wide, centered in the 14px box (4px to 10px) */
+  background:linear-gradient(to right,transparent 4px,var(--neon) 4px,var(--neon) 10px,transparent 10px);
+  border-radius:999px;
+}
+html::-webkit-scrollbar-thumb:hover,
+html::-webkit-scrollbar-thumb:active{
+  /* hover: 7px wide (3.5px to 10.5px) with a soft glow band behind it */
+  background:
+    linear-gradient(to right,transparent 3.5px,color-mix(in srgb,var(--neon) 80%,#fff) 3.5px,color-mix(in srgb,var(--neon) 80%,#fff) 10.5px,transparent 10.5px),
+    linear-gradient(to right,transparent 0,color-mix(in srgb,var(--neon) 35%,transparent) 4px,color-mix(in srgb,var(--neon) 35%,transparent) 10px,transparent 14px);
+}
+
+@supports not selector(::-webkit-scrollbar){
+  html{scrollbar-width:thin;scrollbar-color:var(--neon) transparent}
 }

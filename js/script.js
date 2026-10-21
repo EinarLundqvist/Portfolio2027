@@ -5,23 +5,32 @@ window.lenis = null;
   function raf(t) { window.lenis.raf(t); requestAnimationFrame(raf); }
   requestAnimationFrame(raf);
 })();
+
 (function () {
   var btn = document.getElementById("menu-btn");
   var menu = document.getElementById("menu");
-    function setOpen(open) {
-    menu.hidden = !open;
+  function isOpen() { return menu.classList.contains("is-open"); }
+  function setOpen(open) {
+    menu.classList.toggle("is-open", open);
     btn.setAttribute("aria-expanded", String(open));
     btn.setAttribute("aria-label", open ? "Close menu" : "Open menu");
-    document.body.classList.toggle("menu-open", open);
-    if (window.lenis) open ? window.lenis.stop() : window.lenis.start();   /* add */
   }
-  btn.addEventListener("click", function () { setOpen(menu.hidden); });
+  btn.addEventListener("click", function () { setOpen(!isOpen()); });
   menu.addEventListener("click", function (e) { if (e.target.closest("a")) setOpen(false); });
-  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !menu.hidden) { setOpen(false); btn.focus(); } });
+  document.addEventListener("click", function (e) {
+    if (isOpen() && !menu.contains(e.target) && !btn.contains(e.target)) setOpen(false);
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && isOpen()) { setOpen(false); btn.focus(); }
+  });
 })();
+
 (function () {
   var root = document.documentElement, grid = document.querySelector(".grid"), ticking = false;
   var FROM = 1.75, TO = 0.5; // screen heights: starts when the grid bottom enters the screen, done when it reaches 55% down
+  var root = document.documentElement, grid = document.querySelector(".grid"), ticking = false;
+  if (!grid) return;
+
   function update() {
     var bottom = grid.getBoundingClientRect().bottom / window.innerHeight;
     var t = Math.min(1, Math.max(0, (bottom - TO) / (FROM - TO)));
@@ -33,6 +42,7 @@ window.lenis = null;
   window.addEventListener("resize", req);
   update();
 })();
+
 (function () {
   var img = document.querySelector(".portrait");
   if (!img || img.tagName !== "IMG") return;
@@ -159,4 +169,25 @@ var FS = "precision highp float;varying vec2 v;" +
   }, { passive: true });
     document.documentElement.addEventListener("mouseleave", function () { tx = 0; ty = 0; kick(); });
   }).catch(function () { /* keep the normal image */ });
+})();
+
+(function () {
+  var root = document.documentElement;
+  function check() { root.classList.toggle("scrolled", window.scrollY > 20); }
+  window.addEventListener("scroll", check, { passive: true });
+  check();
+})();
+
+(function () {
+  var root = document.documentElement;
+  var NEAR_BOTTOM = 120;   // px from the very bottom where the header grows back
+  function check() {
+    var y = window.scrollY;
+    var max = root.scrollHeight - window.innerHeight;
+    root.classList.toggle("scrolled", y > 20);
+    root.classList.toggle("at-bottom", max > 0 && y >= max - NEAR_BOTTOM);
+  }
+  window.addEventListener("scroll", check, { passive: true });
+  window.addEventListener("resize", check);
+  check();
 })();

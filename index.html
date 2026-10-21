@@ -24,14 +24,17 @@
     <button class="btn btn--paper btn--icon" id="menu-btn" type="button" aria-expanded="false" aria-controls="menu" aria-label="Open menu">
       <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M4 9h16M9 15h11"/></svg>
     </button>
+    
+      <nav class="menu" id="menu" aria-label="Main">
+        <a href="#work" data-sign=">">Work</a>
+        <a href="#about" data-sign="+">About Me</a>
+        <a href="resume.pdf" data-sign="↗">CV</a>
+      </nav>
+    </div>
+
   </div>
 </header>
 
-<nav class="menu" id="menu" aria-label="Main" hidden>
-  <a href="#work">Work</a>
-  <a href="#about">About</a>
-  <a href="mailto:einar.lundqvist@gmail.com">Contact</a>
-</nav>
 
 <main>
   <h1 class="sr-only">Einar Lundqvist: selected work</h1>
@@ -39,7 +42,7 @@
   <div class="gallery" id="work">
     <ul class="grid">
       <!-- Keep titles short: they sit inside the notch of each card. -->
-      <li data-title="Corinthian Capital"><a class="card" href="#"><div class="thumb"><img src="images/work-1.png" alt="Project one" loading="lazy" onerror="this.hidden=true"></div><p class="label"><span>Project One</span><b>2025</b></p></a></li>
+      <li data-title="Corinthian Capital"><a class="card" href="project-1.html"><div class="thumb"><img src="images/work-1.png" alt="Project one" loading="lazy" onerror="this.hidden=true"></div><p class="label"><span>Project One</span><b>2025</b></p></a></li>
       <li data-title="Ruined Forum"><a class="card" href="#"><div class="thumb"><img src="images/work-2.png" alt="Project two" loading="lazy" onerror="this.hidden=true"></div><p class="label"><span>Project Two</span><b>2025</b></p></a></li>
       <li data-title="Ruined Forum"><a class="card" href="#"><div class="thumb"><img src="images/work-3.png" alt="Project three" loading="lazy" onerror="this.hidden=true"></div><p class="label"><span>Project Three</span><b>2025</b></p></a></li>
       <li data-title="Ruined Forum"><a class="card" href="#"><div class="thumb"><img src="images/work-4.png" alt="Project four" loading="lazy" onerror="this.hidden=true"></div><p class="label"><span>Project Four</span><b>2024</b></p></a></li>

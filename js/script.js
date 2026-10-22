@@ -49,9 +49,9 @@ window.lenis = null;
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
   var HEIGHT_SRC = "images/portraitHeight.png";
-var STRENGTH = -0.0125;
+var STRENGTH = -0.015;
 var FOCUS    = 0.8;
-var SMOOTH   = 0.08;
+var SMOOTH   = 0.1;
 var Y_SCALE  = 0.5;
 var ANCHOR   = 0.1;
 var TEXT_SHIFT = 2;

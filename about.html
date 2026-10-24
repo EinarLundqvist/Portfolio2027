@@ -28,7 +28,7 @@
     <nav class="menu" id="menu" aria-label="Main">
       <a href="index.html#work" data-sign="⌂">Work</a>
       <a href="about.html" data-sign=">">About Me</a>
-      <a href="resume.pdf" data-sign="↗">CV</a>
+      <a href="resume.pdf" data-sign="↗">CV<span class="cv-peek" aria-hidden="true"><img src="images/cvpreview.png" alt=""></span></a>
     </nav>
   </div>
 </header>
@@ -38,14 +38,34 @@
 
   <!-- same markup as the footer panel on the home page -->
   <section class="outro" id="about">
-    <div class="stage">
-      <span class="tab" aria-hidden="true"></span>
-      <div class="glow" aria-hidden="true"><i></i></div>
+        <div class="backbox">
       <div class="back" aria-hidden="true"></div>
       <div class="back-text">
         <h3>About Me</h3>
-        <p>Placeholder text about me. Replace this with a short intro, a bit of background, or whatever you want shown on the back frame.</p>
+        <p>Technical Artist med inriktning shaders och video game graphics. Studerar Procedural Art på The Game Assembly (TGA) i Stockholm och har en backgrund i spelprogrammering. Använder Unreal Engine, Unity och TGAs egenbyggda spelmotor och vill fortsätta arbeta med att utforska/utveckla nya tekniker inom spel. Jag har erfarenhet av projektbaserad spelutveckling i grupp på arbetssätt som Scrum med noggrann uppgifts- och tidsplanering. Jag gillar problemlösning, strukturerat arbete och är van vid att kombinera individuella projekt med gruppprojekt. <strong>Jag söker en praktikplats i höst (2027)</strong> där jag kan utvecklas inom tech art.</p>
+        <h4 class="tl-title">Utbildning</h4>
+        <ol class="timeline">
+          <li>
+            <time>2022 – 2025</time>
+            <h5>LBS Norra – Spelprogrammering</h5>
+            <span class="tl-meta">Gymnasieutbildning · Solna, Stockholm</span>
+            <p>Spelprogrammering, generell spelutveckling och produktutveckling med frekventa skoladministrerade Game-Jams i grupper runt 8 personer.</p>
+          </li>
+          <li>
+            <time>2025 – 2028</time>
+            <h5>The Game Assembly – Procedural art</h5>
+            <span class="tl-meta">Yrkeshögskola · Stora Essingen, Stockholm</span>
+            <p>Arbetar med spelprojekt som utvecklas under flera månader i grupp, runt cirka 18 personer, fyra timmar om dagen.</p>
+            <p>Individuellt arbete inom procedural/tech art, resterande fyra timmarna av skoldagen.</p>
+            <p><strong>Planerad praktikperiod September 2027 – April 2028.</strong></p>
+          </li>
+        </ol>
       </div>
+    </div>
+
+    <div class="stage">
+      <span class="tab" aria-hidden="true"></span>
+      <div class="glow" aria-hidden="true"><i></i></div>
       <div class="panel">
         <h2 class="headline">Einar <em>Lundqvist</em></h2>
 
@@ -82,9 +102,10 @@
         </div>
 
         <a class="btn btn--neon cta" href="mailto:einar.lundqvist@gmail.com">
-          Contact
+          CV
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg>
-        </a>
+          <span class="cv-peek" aria-hidden="true"><img src="images/cvpreview.png" alt=""></span>
+      </a>
       </div>
     </div>
 

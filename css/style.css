@@ -32,15 +32,16 @@ body::after{
   filter:drop-shadow(0 0 .35rem var(--neon)) drop-shadow(0 0 1rem color-mix(in srgb,var(--neon) 60%,transparent));
 }
 .bolts path{fill:none;stroke:var(--neon);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.bolts{overflow:visible;--t-left:2s;--t-trunk:1.2s;--t-branch:.8s}
+.bolts{overflow:visible;--t-left:2s;--t-trunk:3.5s}
 .bolts path{
   stroke-dasharray:1;stroke-dashoffset:1;
   animation:bolt-draw var(--t-left) cubic-bezier(.3,.6,.2,1) forwards;
 }
 .bolts path:nth-child(1){animation-duration:var(--t-left)}                         /* left line: 0 → 2s */
 .bolts path:nth-child(2){animation-duration:var(--t-trunk)}                        /* right trunk: 0 → 1.2s */
-.bolts path:nth-child(3),
-.bolts path:nth-child(4){animation-delay:var(--t-trunk);animation-duration:var(--t-branch)}  /* branches: 1.2s → 2s */
+.bolts path:nth-child(1){stroke:url(#fade-l)}   /* left bolt fades out at its tip */
+.bolts path:nth-child(2){stroke:url(#fade-r)}   /* right bolt fades out at its tip */
+
 @keyframes bolt-draw{to{stroke-dashoffset:0}}
 
 @media (prefers-reduced-motion:reduce){
@@ -403,14 +404,31 @@ img.ico{display:block;background:none;border-radius:0;object-fit:contain}
 .track ul{display:flex;flex:none;gap:clamp(2rem,5vw,4rem);padding-right:clamp(2rem,5vw,4rem)}
 .logos li{font:700 clamp(1.1rem,1rem + .8vw,1.7rem)/1 var(--display);color:var(--neon);white-space:nowrap}
 @keyframes outro-slide{to{transform:translateX(-50%)}}
-.cta
-{
+
+.cta{
   margin-bottom:clamp(1.25rem,3vw,2rem);
   height:clamp(2.25rem,1.3rem + 2vw,3rem);
   min-width:20rem;
-  background:var(--paper);
-  filter:drop-shadow(0 0.3rem 1rem rgba(0, 0, 0, 0.534));
-  
+  background-color:var(--paper);
+  box-shadow:0 0 .8rem rgb(240 152 37 / 0);
+  filter:drop-shadow(0 .3rem 1rem rgb(0 0 0 / .53));
+  transition:background-color .3s,box-shadow .4s,scale .12s;
+}
+.cta svg{transition:translate .2s}
+
+@media (hover:hover){
+  .cta:hover{
+    background-color:var(--neon);
+    box-shadow:0 0 .8rem rgb(240 152 37 / .7);
+  }
+  .cta:hover svg{translate:2px -2px}
+}
+
+/* pressed: a small squeeze, no depth */
+.cta:active{scale:.95}
+
+@media (prefers-reduced-motion:reduce){
+  .cta,.cta svg{transition:none}
 }
 
 /* ---- CV preview, shared ---- */

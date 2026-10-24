@@ -35,7 +35,7 @@
 
 <main>
   <h1 class="sr-only">About Einar Lundqvist</h1>
-  <p class="hero">About <em>Me</em></p>
+    <p class="hero">About <em>Me</em></p>
   <!-- same markup as the footer panel on the home page -->
   <section class="outro" id="about">
     <div class="backbox">
@@ -119,10 +119,19 @@
 </main>
 
 <svg class="bolts" viewBox="0 0 1375 708" preserveAspectRatio="xMidYMin meet" aria-hidden="true">
-  <path pathLength="1" d="M85 -60 L70 8 C30 35 120 55 90 100 C70 140 170 150 210 135 C260 120 290 160 330 175 C380 192 410 150 450 190 C480 220 440 260 400 290 C360 320 380 360 350 385"/>
-  <path pathLength="1" d="M1280 -60 L1290 8 C1330 40 1250 60 1270 100 C1285 140 1190 150 1150 140 C1100 128 1090 170 1040 185"/>
-  <path pathLength="1" d="M1040 185 C990 200 1010 240 1000 270 C990 300 940 300 925 335 C915 360 930 375 910 388"/>
-  <path pathLength="1" d="M1040 185 C1090 200 1130 215 1160 240 C1190 262 1170 310 1190 360"/>
+  <!-- left line: starts above the screen at y -60 -->
+<path pathLength="1" transform="translate(520 0) scale(-1 1)" d="M85 -60 L70 8 C64 35 120 55 90 100 C65 137 170 150 210 135 C260 120 290 160 330 175 C380 192 410 150 450 190 C480 220 440 260 400 290 C360 320 380 360 350 385"/>
+
+  <!-- right line: trunk, also starts above the screen -->
+<path pathLength="1" transform="translate(2225 0) scale(-1 1)" d="M1280 -60 L1295 28 C1301 63 1340 112 1300 138 C1260 164 1180 178 1135 148 C1090 118 1085 195 1035 192 C985 189 960 160 925 195 C890 230 945 268 972 298 C999 328 1025 375 1012 404"/>
+    <linearGradient id="fade-l" gradientUnits="userSpaceOnUse" x1="0" y1="190" x2="0" y2="385">
+      <stop offset="0" style="stop-color:var(--neon)"/>
+      <stop offset="1" style="stop-color:var(--neon);stop-opacity:0"/>
+    </linearGradient>
+    <linearGradient id="fade-r" gradientUnits="userSpaceOnUse" x1="0" y1="190" x2="0" y2="336">
+      <stop offset="0" style="stop-color:var(--neon)"/>
+      <stop offset="1" style="stop-color:var(--neon);stop-opacity:0"/>
+    </linearGradient>
 </svg>
 
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>

@@ -18,7 +18,31 @@ window.lenis = null;
     btn.setAttribute("aria-expanded", String(open));
     btn.setAttribute("aria-label", open ? "Close menu" : "Open menu");
   }
-  btn.addEventListener("click", function () { setOpen(!isOpen()); });
+  
+  var canHover = matchMedia("(hover:hover)").matches;
+  var closeTimer;
+
+  // click still works on touch screens and from the keyboard
+  btn.addEventListener("click", function (e) {
+    if (canHover && e.detail > 0) return;   // a real mouse click: hover already handles it
+    setOpen(!isOpen());
+  });
+
+  // open on hover over the button or the menu, close shortly after leaving both
+  if (canHover) {
+    [btn, menu].forEach(function (el) {
+      el.addEventListener("pointerenter", function (e) {
+        if (e.pointerType !== "mouse") return;
+        clearTimeout(closeTimer);
+        setOpen(true);
+      });
+      el.addEventListener("pointerleave", function (e) {
+        if (e.pointerType !== "mouse") return;
+        closeTimer = setTimeout(function () { setOpen(false); }, 150);
+      });
+    });
+  }
+
   menu.addEventListener("click", function (e) { if (e.target.closest("a")) setOpen(false); });
   document.addEventListener("click", function (e) {
     if (isOpen() && !menu.contains(e.target) && !btn.contains(e.target)) setOpen(false);

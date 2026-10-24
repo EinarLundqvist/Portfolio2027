@@ -10,7 +10,10 @@ window.lenis = null;
   var btn = document.getElementById("menu-btn");
   var menu = document.getElementById("menu");
   function isOpen() { return menu.classList.contains("is-open"); }
+  var openY = 0;
   function setOpen(open) {
+    if (open) openY = window.scrollY;
+    menu.classList.toggle("is-open", open);
     menu.classList.toggle("is-open", open);
     btn.setAttribute("aria-expanded", String(open));
     btn.setAttribute("aria-label", open ? "Close menu" : "Open menu");
@@ -20,6 +23,9 @@ window.lenis = null;
   document.addEventListener("click", function (e) {
     if (isOpen() && !menu.contains(e.target) && !btn.contains(e.target)) setOpen(false);
   });
+  window.addEventListener("scroll", function () {
+    if (isOpen() && Math.abs(window.scrollY - openY) > 6) setOpen(false);
+  }, { passive: true });
   document.addEventListener("keydown", function (e) {
     if (e.key === "Escape" && isOpen()) { setOpen(false); btn.focus(); }
   });
@@ -190,4 +196,44 @@ var FS = "precision highp float;varying vec2 v;" +
   window.addEventListener("scroll", check, { passive: true });
   window.addEventListener("resize", check);
   check();
+})();
+
+(function () {
+  var items = document.querySelectorAll(".has-tip");
+  if (!items.length) return;
+  var tip = document.createElement("div");
+  tip.className = "tip";
+  tip.setAttribute("role", "tooltip");
+  document.body.appendChild(tip);
+
+  function show(el, x, y) {
+    if (el.dataset.color) tip.style.setProperty("--tip-ring", el.dataset.color);
+    else tip.style.removeProperty("--tip-ring");
+    tip.textContent = el.dataset.tip;
+    place(x, y);
+    tip.classList.add("is-on");
+  }
+  function place(x, y) {
+    var gap = 14, w = tip.offsetWidth, h = tip.offsetHeight;
+    var left = x + gap, top = y + gap;
+    if (left + w > innerWidth - 8) left = x - w - gap;   // flip near the right edge
+    if (top + h > innerHeight - 8) top = y - h - gap;    // flip near the bottom edge
+    tip.style.transform = "translate(" + left + "px," + top + "px)";
+  }
+  function hide() { tip.classList.remove("is-on"); }
+
+  items.forEach(function (el) {
+    el.addEventListener("pointerenter", function (e) {
+      if (e.pointerType === "mouse") show(el, e.clientX, e.clientY);
+    });
+    el.addEventListener("pointermove", function (e) {
+      if (e.pointerType === "mouse") place(e.clientX, e.clientY);
+    });
+    el.addEventListener("pointerleave", hide);
+    el.addEventListener("focus", function () {
+      var r = el.getBoundingClientRect();
+      show(el, r.right, r.top);
+    });
+    el.addEventListener("blur", hide);
+  });
 })();

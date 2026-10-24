@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f0f0f">
+<title>About Me · Einar Lundqvist</title>
+<meta name="description" content="About Einar Lundqvist, technical artist.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700&family=DM+Sans:wght@400;500&family=Instrument+Serif&display=swap">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="page">
+<header class="top">
+  <a class="logo" href="index.html" aria-label="Einar Lundqvist, home">
+    <span>Einar</span><span>Lundqvist</span>
+  </a>
+  <div class="actions">
+    <a class="btn btn--neon" href="mailto:einar.lundqvist@gmail.com">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+      Contact
+    </a>
+    <button class="btn btn--paper btn--icon" id="menu-btn" type="button" aria-expanded="false" aria-controls="menu" aria-label="Open menu">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path class="i-open" d="M4 9h16M9 15h11"/><path class="i-close" d="M6 6l12 12M18 6 6 18"/></svg>
+    </button>
+
+    <nav class="menu" id="menu" aria-label="Main">
+      <a href="index.html#work" data-sign="⌂">Work</a>
+      <a href="about.html" data-sign=">">About Me</a>
+      <a href="resume.pdf" data-sign="↗">CV</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <h1 class="sr-only">About Einar Lundqvist</h1>
+
+  <!-- same markup as the footer panel on the home page -->
+  <section class="outro" id="about">
+    <div class="stage">
+      <span class="tab" aria-hidden="true"></span>
+      <div class="glow" aria-hidden="true"><i></i></div>
+      <div class="back" aria-hidden="true"></div>
+      <div class="back-text">
+        <h3>About Me</h3>
+        <p>Placeholder text about me. Replace this with a short intro, a bit of background, or whatever you want shown on the back frame.</p>
+      </div>
+      <div class="panel">
+        <h2 class="headline">Einar <em>Lundqvist</em></h2>
+
+        <img class="portrait" src="images/portrait2.png" alt="Einar Lundqvist" loading="lazy" onerror="this.hidden=true">
+
+        <div class="cols">
+          <section class="links links--r" aria-labelledby="skills-h">
+            <h2 id="skills-h">Skills:</h2>
+            <ul class="skill-list">
+              <li><img class="ico" src="images/icons/HLSL.png" alt="" width="40" height="40">HLSL</li>
+              <li><img class="ico" src="images/icons/Csharp.png" alt="" width="40" height="40">C#</li>
+              <li><img class="ico" src="images/icons/GLSL.png" alt="" width="40" height="40">GLSL</li>
+              <li><img class="ico" src="images/icons/Python.png" alt="" width="40" height="40">Python</li>
+              <li><img class="ico" src="images/icons/Blender.png" alt="" width="40" height="40">Python Plugins</li>
+              <li><img class="ico" src="images/icons/Shaderlab.png" alt="" width="40" height="40">Shaderlab</li>
+              <li><img class="ico" src="images/icons/DirectX11.png" alt="" width="40" height="40">DirectX 11</li>
+            </ul>
+          </section>
+
+          <section class="links links--l" aria-labelledby="soft-h">
+            <h2 id="soft-h">Softwares:</h2>
+            <ul class="skill-list">
+              <li class="has-tip" tabindex="0" data-color="#ff6a00" data-tip="Placeholder: procedural modeling, VEX, and simulation work in Houdini."><img class="ico" src="images/icons/Houdini.png" alt="" width="40" height="40">Houdini</li>
+              <li class="has-tip" tabindex="0" data-color="#ea7600" data-tip="Placeholder: modeling, geometry nodes, and Python add-ons in Blender."><img class="ico" src="images/icons/Blender.png" alt="" width="40" height="40">Blender</li>
+              <li><img class="ico" src="images/icons/SubstanceDesigner.png" alt="" width="40" height="40">Designer</li>
+              <li><img class="ico" src="images/icons/SubstancePainter.png" alt="" width="40" height="40">Painter</li>
+              <li><img class="ico" src="images/icons/Unreal.png" alt="" width="40" height="40">Unreal</li>
+              <li><img class="ico" src="images/icons/Unity.png" alt="" width="40" height="40">Unity</li>
+              <li><img class="ico" src="images/icons/P4V.png" alt="" width="40" height="40">Perforce P4V</li>
+              <li><img class="ico" src="images/icons/YouTrack.png" alt="" width="40" height="40">YouTrack</li>
+              <li><img class="ico" src="images/icons/GitHub.png" alt="" width="40" height="40">GitHub</li>
+            </ul>
+          </section>
+        </div>
+
+        <a class="btn btn--neon cta" href="mailto:einar.lundqvist@gmail.com">
+          Contact
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="legal">
+      <p>V25.3.27</p>
+      <nav aria-label="Legal"><a href="#">Back to top ↑</a></nav>
+    </div>
+
+    <p class="disclaimer">All trademarked logos are the property of their owners and are not shown for affiliation.</p>
+  </section>
+</main>
+
+<svg class="bolts" viewBox="0 0 1375 708" preserveAspectRatio="xMidYMin meet" aria-hidden="true">
+  <path pathLength="1" d="M85 -60 L70 8 C30 35 120 55 90 100 C70 140 170 150 210 135 C260 120 290 160 330 175 C380 192 410 150 450 190 C480 220 440 260 400 290 C360 320 380 360 350 385"/>
+  <path pathLength="1" d="M1280 -60 L1290 8 C1330 40 1250 60 1270 100 C1285 140 1190 150 1150 140 C1100 128 1090 170 1040 185"/>
+  <path pathLength="1" d="M1040 185 C990 200 1010 240 1000 270 C990 300 940 300 925 335 C915 360 930 375 910 388"/>
+  <path pathLength="1" d="M1040 185 C1090 200 1130 215 1160 240 C1190 262 1170 310 1190 360"/>
+</svg>
+
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+<script src="js/script.js"></script>
+</body>
+</html>

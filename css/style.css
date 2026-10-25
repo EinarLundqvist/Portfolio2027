@@ -460,11 +460,6 @@ img.ico{display:block;background:none;border-radius:0;object-fit:contain}
   translate:0 var(--hide);rotate:-4deg;
 }
 
-/* menu: slides down from behind the menu's bottom edge */
-.menu a:last-child{                                        /* CV link reaches the menu's outer edge so hover never drops */
-  padding-bottom:calc(.8rem + .3rem + var(--bw));
-  margin-bottom:calc(-.3rem - var(--bw));
-}
 .menu .cv-peek{--w:9rem;top:100%;padding-bottom:1.5rem}
 .menu .cv-peek img{
   border-radius:0 0 .6rem .6rem;
@@ -473,6 +468,69 @@ img.ico{display:block;background:none;border-radius:0;object-fit:contain}
 }
 .menu a:hover .cv-peek img,.menu a:focus-visible .cv-peek img{
   translate:0 calc(-1 * var(--hide));rotate:3deg;
+}
+
+/* ---------- nav: always inline ---------- */
+@keyframes nav-draw{from{scale:0 1}}
+
+.actions{align-self:center}
+.menu{
+  --px:clamp(.5rem,2.2vw,1.4rem);                          /* horizontal padding of each link */
+  position:static;translate:none;
+  opacity:1;visibility:visible;pointer-events:auto;
+  flex-direction:row;align-items:center;gap:.1rem;
+  min-width:0;width:auto;padding:0;
+  background:none;border:0;border-radius:0;box-shadow:none;
+  transition:none;
+}
+.menu::before{display:none}
+
+.menu a{
+  padding:.8rem var(--px);
+  white-space:nowrap;
+  font-size:clamp(.78rem,.55rem + 1.1vw,1.35rem);
+  color:color-mix(in srgb,var(--paper) 70%,transparent);   /* quieter until hovered or current */
+  transition:color .2s;
+}
+.menu a:hover,.menu a:focus-visible,.menu a[aria-current]{color:var(--paper)}
+
+/* hover icon: slides in to the left of the label, no layout shift */
+.menu a::before{
+  position:absolute;left:calc(var(--px) * .35);top:50%;
+  max-width:none;margin:0;overflow:visible;
+  opacity:0;translate:-.4rem -50%;
+  transition:opacity .2s,translate .25s cubic-bezier(.22,1,.36,1);
+}
+.menu a:hover::before,.menu a:focus-visible::before{
+  max-width:none;margin:0;opacity:1;translate:0 -50%;
+}
+
+/* underline: wipes in from the left on hover, out to the right on leave */
+.menu a::after,.menu a + a::after{
+  content:"";position:absolute;top:auto;bottom:.45rem;left:var(--px);right:var(--px);
+  height:2px;border-radius:2px;
+  background:var(--neon);
+  box-shadow:0 0 .6rem var(--neon);
+  transform-origin:right center;scale:0 1;
+  transition:scale .4s cubic-bezier(.22,1,.36,1);
+}
+.menu a:hover::after,.menu a:focus-visible::after{transform-origin:left center;scale:1 1}
+
+/* current page: underline stays on and draws itself in on load */
+.menu a[aria-current]::after{
+  transform-origin:left center;scale:1 1;
+  animation:nav-draw .7s .25s cubic-bezier(.22,1,.36,1) both;
+}
+
+/* phones: links drop to their own row under the logo and spread across the width */
+@media (max-width:47.99rem){
+  .top{flex-wrap:wrap}
+  .actions{flex-basis:100%}
+  .menu{flex:1;justify-content:space-between}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .menu a::before,.menu a::after{transition:none;animation:none !important}
 }
 
 @view-transition{navigation:auto}
@@ -600,8 +658,8 @@ img.ico{display:block;background:none;border-radius:0;object-fit:contain}
   .stage::before{content:"";position:absolute;inset:var(--bw);background:var(--line)}
   /* glow that fades with distance from the frame's silhouette */
   .glow{
-    --glow:1;          /* strength: 0 = off, 1 = full */
-    --glow-size:0.5;     /* spread: 0.5 = tight, 2 = wide */
+    --glow:1.0;          /* strength: 0 = off, 1 = full */
+    --glow-size:0.05;     /* spread: 0.5 = tight, 2 = wide */
     position:absolute;inset:0;z-index:-1;pointer-events:none;
     opacity:var(--glow);
     filter:

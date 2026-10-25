@@ -7,55 +7,6 @@ window.lenis = null;
 })();
 
 (function () {
-  var btn = document.getElementById("menu-btn");
-  var menu = document.getElementById("menu");
-  function isOpen() { return menu.classList.contains("is-open"); }
-  var openY = 0;
-  function setOpen(open) {
-    if (open) openY = window.scrollY;
-    menu.classList.toggle("is-open", open);
-    menu.classList.toggle("is-open", open);
-    btn.setAttribute("aria-expanded", String(open));
-    btn.setAttribute("aria-label", open ? "Close menu" : "Open menu");
-  }
-  
-  var canHover = matchMedia("(hover:hover)").matches;
-  var closeTimer;
-
-  // click still works on touch screens and from the keyboard
-  btn.addEventListener("click", function (e) {
-    if (canHover && e.detail > 0) return;   // a real mouse click: hover already handles it
-    setOpen(!isOpen());
-  });
-
-  // open on hover over the button or the menu, close shortly after leaving both
-  if (canHover) {
-    [btn, menu].forEach(function (el) {
-      el.addEventListener("pointerenter", function (e) {
-        if (e.pointerType !== "mouse") return;
-        clearTimeout(closeTimer);
-        setOpen(true);
-      });
-      el.addEventListener("pointerleave", function (e) {
-        if (e.pointerType !== "mouse") return;
-        closeTimer = setTimeout(function () { setOpen(false); }, 150);
-      });
-    });
-  }
-
-  menu.addEventListener("click", function (e) { if (e.target.closest("a")) setOpen(false); });
-  document.addEventListener("click", function (e) {
-    if (isOpen() && !menu.contains(e.target) && !btn.contains(e.target)) setOpen(false);
-  });
-  window.addEventListener("scroll", function () {
-    if (isOpen() && Math.abs(window.scrollY - openY) > 6) setOpen(false);
-  }, { passive: true });
-  document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape" && isOpen()) { setOpen(false); btn.focus(); }
-  });
-})();
-
-(function () {
   var root = document.documentElement, grid = document.querySelector(".grid"), ticking = false;
   var FROM = 1.75, TO = 0.5; // screen heights: starts when the grid bottom enters the screen, done when it reaches 55% down
   var root = document.documentElement, grid = document.querySelector(".grid"), ticking = false;

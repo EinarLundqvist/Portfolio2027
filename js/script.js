@@ -34,7 +34,7 @@ var STRENGTH = -0.015;
 var FOCUS    = 0.8;
 var SMOOTH   = 0.1;
 var Y_SCALE  = 0.5;
-var ANCHOR   = 0.1;
+var ANCHOR   = 0.05;
 var TEXT_SHIFT = 2;
 
   var VS = "attribute vec2 p;varying vec2 v;void main(){v=p*.5+.5;gl_Position=vec4(p,0.,1.);}";
@@ -211,4 +211,67 @@ var FS = "precision highp float;varying vec2 v;" +
     });
     el.addEventListener("blur", hide);
   });
+})();
+
+(function () {
+  var menu = document.querySelector(".menu");
+  if (!menu) return;
+  var line = document.createElement("span");
+  line.className = "menu-line";
+  line.setAttribute("aria-hidden", "true");
+  menu.appendChild(line);
+
+  var active = null;
+  function current() { return menu.querySelector("a[aria-current]"); }
+
+  function place(a) {
+    var cs = getComputedStyle(a);
+    var pl = parseFloat(cs.paddingLeft), pr = parseFloat(cs.paddingRight);
+    line.style.left = (a.offsetLeft + pl) + "px";
+    line.style.width = (a.offsetWidth - pl - pr) + "px";
+  }
+  function jump(a) {                                   // move with no animation
+    line.classList.add("no-anim");
+    place(a);
+    line.offsetWidth;                                  // flush so the change applies instantly
+    line.classList.remove("no-anim");
+  }
+  function show(a) {
+    active = a;
+    if (!a) { line.classList.remove("is-on"); return; }
+    if (!line.classList.contains("is-on")) {           // first appearance: appear in place, don't slide in
+      jump(a);
+      line.classList.add("is-on");
+    } else {
+      place(a);                                        // slide from wherever it is
+    }
+  }
+
+  menu.querySelectorAll("a").forEach(function (a) {
+    a.addEventListener("mouseenter", function () { show(a); });
+    a.addEventListener("focus", function () { show(a); });
+  });
+  menu.addEventListener("mouseleave", function () { show(current()); });
+  menu.addEventListener("focusout", function (e) {
+    if (!menu.contains(e.relatedTarget)) show(current());
+  });
+
+  // on load: the line grows out of the current link's left edge
+  var c = current();
+  if (c) {
+    active = c;
+    var cs = getComputedStyle(c);
+    line.classList.add("no-anim");
+    line.style.left = (c.offsetLeft + parseFloat(cs.paddingLeft)) + "px";
+    line.style.width = "0px";
+    line.classList.add("is-on");
+    line.offsetWidth;
+    line.classList.remove("no-anim");
+    place(c);
+  }
+
+  // re-measure when the window resizes or the web font finishes loading
+  function refresh() { if (active) jump(active); }
+  window.addEventListener("resize", refresh);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(refresh);
 })();

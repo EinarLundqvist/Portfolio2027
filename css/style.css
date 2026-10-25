@@ -342,6 +342,28 @@ body.page{min-height:100vh}
   display:flex;align-items:center;gap:.65rem;white-space:nowrap;
   font:500 clamp(.9rem,.75rem + .45vw,1.15rem)/1.1 var(--display);color:var(--paper);
 }
+.contact-list{display:grid;gap:1.5rem;justify-items:start;text-align:left}
+.contact-list li,.contact-list a{display:flex;align-items:center;gap:.65rem;white-space:nowrap}
+.contact-list li{font:500 clamp(.9rem,.75rem + .45vw,1.15rem)/1.1 var(--display);color:var(--paper)}
+.contact-list a{transition:color .2s}
+.contact-list a .ico{transition:translate .2s}
+.contact-list a:hover,.contact-list a:focus-visible{color:var(--neon)}
+.contact-list a:hover .ico,.contact-list a:focus-visible .ico{translate:0 -2px}   /* same lift the software icons had */
+.ico-location{
+  flex:none;width:2.8em;height:2.8em;
+  background:currentColor;
+  -webkit-mask:url("../images/icons/pin.png") center / contain no-repeat;
+        mask:url("../images/icons/pin.png") center / contain no-repeat;
+  flex:none;width:2em;height:2em;
+}
+
+.ico-phone{
+  flex:none;width:2.8em;height:2.8em;
+  background:currentColor;
+  -webkit-mask:url("../images/icons/phone.png") center / contain no-repeat;
+        mask:url("../images/icons/phone.png") center / contain no-repeat;
+  flex:none;width:2em;height:2em;
+}
 
 /* hover hint: dotted underline + help cursor, brightens on hover */
 .has-tip{cursor:help;outline:none}
@@ -427,6 +449,30 @@ img.ico{display:block;background:none;border-radius:0;object-fit:contain}
 /* pressed: a small squeeze, no depth */
 .cta:active{scale:.95}
 
+/* "About Me" button: > and underline appear on hover, same look as the menu links */
+.cta-label{position:relative}
+.cta-sign{
+  position:absolute;right:100%;top:50%;margin-right:.3rem;   /* sits left of the label, so the text never shifts */
+  font:500 1em/1 ui-monospace,Menlo,Consolas,monospace;      /* same as the menu's > */
+  color:#0f0f0f;                                             /* dark, because the button turns neon on hover */
+  opacity:0;translate:.4rem -50%;
+  transition:opacity .2s,translate .25s cubic-bezier(.22,1,.36,1);
+}
+.cta-label::after{
+  content:"";position:absolute;left:0;right:0;bottom:-.35rem;
+  height:2px;border-radius:2px;
+  background:#0f0f0f;
+  transform-origin:right center;scale:0 1;                   /* wipes out to the right on leave */
+  transition:scale .4s cubic-bezier(.22,1,.36,1);
+}
+@media (hover:hover){
+  .cta:hover .cta-sign,.cta:focus-visible .cta-sign{opacity:1;translate:0 -50%}
+  .cta:hover .cta-label::after,.cta:focus-visible .cta-label::after{transform-origin:left center;scale:1 1}   /* wipes in from the left */
+}
+@media (prefers-reduced-motion:reduce){
+  .cta-sign,.cta-label::after{transition:none}
+}
+
 @media (prefers-reduced-motion:reduce){
   .cta,.cta svg{transition:none}
 }
@@ -441,6 +487,7 @@ img.ico{display:block;background:none;border-radius:0;object-fit:contain}
   overflow:clip;                    /* clips the image AND stops it adding page height */
   pointer-events:none;
 }
+
 .cv-peek img{
   display:block;width:100%;height:auto;
   border:var(--bw) solid var(--ring);background:var(--panel);
@@ -470,13 +517,11 @@ img.ico{display:block;background:none;border-radius:0;object-fit:contain}
   translate:0 calc(-1 * var(--hide));rotate:3deg;
 }
 
-/* ---------- nav: always inline ---------- */
-@keyframes nav-draw{from{scale:0 1}}
 
 .actions{align-self:center}
 .menu{
   --px:clamp(.5rem,2.2vw,1.4rem);                          /* horizontal padding of each link */
-  position:static;translate:none;
+  position:relative;left:auto;top:auto;translate:none;
   opacity:1;visibility:visible;pointer-events:auto;
   flex-direction:row;align-items:center;gap:.1rem;
   min-width:0;width:auto;padding:0;
@@ -505,22 +550,20 @@ img.ico{display:block;background:none;border-radius:0;object-fit:contain}
   max-width:none;margin:0;opacity:1;translate:0 -50%;
 }
 
-/* underline: wipes in from the left on hover, out to the right on leave */
-.menu a::after,.menu a + a::after{
-  content:"";position:absolute;top:auto;bottom:.45rem;left:var(--px);right:var(--px);
-  height:2px;border-radius:2px;
+/* kill the old hairline divider pseudo-element so it doesn't show up in the inline row */
+.menu a::after,.menu a + a::after{content:none}
+
+/* one underline that slides between links (positioned by script.js) */
+.menu-line{
+  position:absolute;left:0;bottom:.45rem;
+  width:0;height:2px;border-radius:2px;
   background:var(--neon);
   box-shadow:0 0 .6rem var(--neon);
-  transform-origin:right center;scale:0 1;
-  transition:scale .4s cubic-bezier(.22,1,.36,1);
+  opacity:0;pointer-events:none;
+  transition:left .45s cubic-bezier(.22,1,.36,1),width .45s cubic-bezier(.22,1,.36,1),opacity .2s;
 }
-.menu a:hover::after,.menu a:focus-visible::after{transform-origin:left center;scale:1 1}
-
-/* current page: underline stays on and draws itself in on load */
-.menu a[aria-current]::after{
-  transform-origin:left center;scale:1 1;
-  animation:nav-draw .7s .25s cubic-bezier(.22,1,.36,1) both;
-}
+.menu-line.is-on{opacity:1}
+.menu-line.no-anim{transition:none}
 
 /* phones: links drop to their own row under the logo and spread across the width */
 @media (max-width:47.99rem){
@@ -531,12 +574,14 @@ img.ico{display:block;background:none;border-radius:0;object-fit:contain}
 
 @media (prefers-reduced-motion:reduce){
   .menu a::before,.menu a::after{transition:none;animation:none !important}
+  .menu a::before,.menu-line{transition:none}
 }
 
 @view-transition{navigation:auto}
 
 /* bottom bar: two lime tabs with notched corners */
-.legal{display:flex;justify-content:space-between;align-items:flex-start;min-height:var(--bar-h);font:700 1rem/1 var(--sans);letter-spacing:.04em;color:var(--panel)}
+.legal{display:flex;justify-content:space-between;align-items:flex-start;min-height:var(--bar-h);font:500 0.95rem/1 var(--sans);letter-spacing:.04em;color:color-mix(in srgb,var(--ink) 32%,transparent);}
+.legal p:hover,.legal a:hover{color:color-mix(in srgb,var(--ink) 80%,transparent)}
 .legal>*{position:relative;z-index:3;margin:calc(-1 * var(--bump)) 0 0;padding-top:var(--bump);height:calc(var(--bump) + var(--bar-h));display:flex;align-items:center;gap:1.25rem;background:var(--neon)}
 .legal>*::after{content:"";position:absolute;top:0;width:var(--bump);height:var(--bump)}
 .legal p{margin:0;padding-right:1.25rem}
@@ -544,7 +589,6 @@ img.ico{display:block;background:none;border-radius:0;object-fit:contain}
 .legal nav{padding-left:1.25rem}
 .legal nav::after{right:100%;background:radial-gradient(circle at 0 0,transparent calc(var(--bump) - .5px),var(--neon) var(--bump))}
 .legal a{text-transform:uppercase}
-.legal a:hover{text-decoration:underline}
 
 /* ---------- About card (sits behind the panel) ---------- */
 .backbox{
@@ -724,14 +768,19 @@ img.ico{display:block;background:none;border-radius:0;object-fit:contain}
 .back-text strong{font-weight:500;color:var(--paper)}
 
 .disclaimer{
-  margin:0rem auto 0;max-width:40rem;padding-inline:var(--pad);
+    margin:0rem auto 0;max-width:80rem;padding-inline:var(--pad);
   text-align:center;text-wrap:balance;
   font:400 .62rem/1.6 var(--sans);
   letter-spacing:.02em;
   color:color-mix(in srgb,var(--ink) 32%,transparent);   /* was 45% */
 }
 .disclaimer:hover{color:color-mix(in srgb,var(--ink) 80%,transparent)}
+.disclaimer a{text-decoration:underline;text-underline-offset:.2em;text-decoration-color:color-mix(in srgb,currentColor 40%,transparent);transition:text-decoration-color .2s}
+.disclaimer a:hover{text-decoration-color:currentColor}
 
+@media (min-width:64rem){
+  .disclaimer{margin-top:-1.0rem}
+}
 
 /* wide screens: more side space, footer pulled up under the gallery */
 @media (min-width:64rem) and (min-aspect-ratio:3/2){

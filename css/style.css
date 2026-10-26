@@ -844,3 +844,92 @@ html::-webkit-scrollbar-thumb:active{
 @supports not selector(::-webkit-scrollbar){
   html{scrollbar-width:thin;scrollbar-color:var(--neon) transparent}
 }
+/* below 64rem: hide the whole bottom bar (version + back to top) */
+@media (max-width:63.99rem){
+  .legal{display:none}
+}
+@media (max-width:47.5rem) and (max-height:55.875rem){
+  .panel{
+    container-type:inline-size;
+    --pw:min(78cqw,22rem);
+    --k:.25;
+    --lift:15rem;                                   /* wanted overlap with the headline */
+
+    /* the same values the panel itself uses for its top padding and row gap */
+    --pad-top:clamp(2rem,6vw,4.5rem);
+    --row-gap:clamp(1.25rem,3vw,2rem);
+    /* space above the portrait (padding + one headline line + gap), minus a small safety margin */
+    --room:calc(var(--pad-top) + var(--pw) * var(--k) * .95 + var(--row-gap) - .75rem);
+  }
+
+  .portrait{
+    width:var(--pw);
+    margin-top:calc(-1 * clamp(0rem, var(--lift), var(--room)));   /* never lifts past the panel's top edge */
+  }
+
+  .headline{font-size:calc(var(--pw) * var(--k))}
+}
+/* below 64rem: one outline around the panel AND its tab */
+@media (max-width:63.99rem){
+  .panel::after{border:0}
+
+  .stage{
+    --glow:1;           /* 0 = off, 1 = full (same knob as the widescreen .glow) */
+    --glow-size:.05;    /* same value the widescreen panel uses */
+    filter:
+      /* 1) hard outline around panel + tab (from before) */
+      drop-shadow(var(--bw) 0 0 var(--ring))
+      drop-shadow(calc(-1 * var(--bw)) 0 0 var(--ring))
+      drop-shadow(0 var(--bw) 0 var(--ring))
+      drop-shadow(0 calc(-1 * var(--bw)) 0 var(--ring))
+      /* 2) the same three neon layers as the widescreen glow, wrapped around that outline */
+      drop-shadow(0 0 calc(.75rem * var(--glow-size)) color-mix(in srgb,var(--neon) calc(var(--glow) * 100%),transparent))
+      drop-shadow(0 0 calc(1.5rem * var(--glow-size)) color-mix(in srgb,var(--neon) calc(var(--glow) * 100%),transparent))
+      drop-shadow(0 0 calc(3rem * var(--glow-size)) color-mix(in srgb,var(--neon) calc(var(--glow) * 100%),transparent));
+  }
+}
+.tab{
+  /* same noise, with the 20% opacity baked in, so it can sit inside a background layer */
+  --noise-soft:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='.134 .134 .134 0 .3 .134 .134 .134 0 .3 .134 .134 .134 0 .3 0 0 0 0 1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.tab,
+.tab::before,
+.tab::after{
+  background:var(--noise-soft) 0 0 / 260px 260px, var(--panel);
+  background-blend-mode:overlay, normal;
+}
+
+/* shoulders: the curve is now a mask, so the noise can't leak into the cut-out */
+.tab::before{
+  -webkit-mask:radial-gradient(circle at 0 0,transparent calc(var(--tab-h) - .5px),#000 var(--tab-h));
+          mask:radial-gradient(circle at 0 0,transparent calc(var(--tab-h) - .5px),#000 var(--tab-h));
+}
+.tab::after{
+  -webkit-mask:radial-gradient(circle at 100% 0,transparent calc(var(--tab-h) - .5px),#000 var(--tab-h));
+          mask:radial-gradient(circle at 100% 0,transparent calc(var(--tab-h) - .5px),#000 var(--tab-h));
+}
+@media (max-width:47.5rem) and (max-height:55.875rem){
+  .grid{
+    --cols:1;
+    margin-bottom:0;                 /* the negative margin only existed to close the stagger gap */
+    max-width:32rem;                 /* optional: stops the square cards getting huge; remove for full width */
+    margin-inline:auto;
+  }
+
+  /* no half-card offsets, no scroll-driven movement */
+  .grid>li:nth-child(n){
+    translate:none;
+    will-change:auto;
+    grid-column:auto;                /* card 7 was pinned to column 2 */
+  }
+
+  /* hover (mouse only): the old rules were written for a 3-column grid */
+  @media (hover:hover){
+    .grid>li:nth-child(n):has(~ li:nth-child(n):hover) .card{translate:none}
+
+    /* in one column, the card directly above the hovered one slides up to make room for the title */
+    .grid>li:nth-child(n):has(+ li:nth-child(n):hover) .card{
+      translate:0 calc(var(--slide) * -1);
+    }
+  }
+}

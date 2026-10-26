@@ -908,7 +908,39 @@ html::-webkit-scrollbar-thumb:active{
   -webkit-mask:radial-gradient(circle at 100% 0,transparent calc(var(--tab-h) - .5px),#000 var(--tab-h));
           mask:radial-gradient(circle at 100% 0,transparent calc(var(--tab-h) - .5px),#000 var(--tab-h));
 }
-@media (max-width:47.5rem) and (max-height:55.875rem){
+@media (max-width:47.5rem){
+  .grid{
+    --slide:1.5rem;
+    row-gap:calc(var(--gap) + var(--slide));
+  }
+  .grid>li .card{translate:none !important}
+
+  .grid>li::after{
+    font-size:clamp(1.05rem,.85rem + 1vw,1.5rem);
+    translate:0 0;
+    opacity:1;
+    place-items:end center;
+    transition:none;
+    padding-bottom:0.3rem;
+  }
+  .grid>li:nth-child(n):not(:last-child) .card{
+    translate:0 calc(var(--slide) * -1);
+  }
+
+  .menu a{font-size:clamp(1.05rem,.75rem + 1.6vw,1.7rem)}
+  html.scrolled:not(.at-bottom) .logo,
+  html.scrolled:not(.at-bottom) .actions{scale:1}
+  .bolts{
+    --bs:2.8;                        /* scale factor */
+    transform-origin:100% 0;         /* grow from the top-right corner so the right bolt stays on screen */
+    scale:var(--bs);
+  }
+  .bolts path:nth-child(1){display:none}   /* hide the left bolt, keep the right one */
+  .bolts path{stroke-width:3.5}              /* your thickness knob: see the note below */
+  body{overflow-x:clip}
+
+  .contact-list li:has(.ico-location){display:none}
+  .disclaimer{margin-top:1rem}
   .grid{
     --cols:1;
     margin-bottom:0;                 /* the negative margin only existed to close the stagger gap */
@@ -923,6 +955,14 @@ html::-webkit-scrollbar-thumb:active{
     grid-column:auto;                /* card 7 was pinned to column 2 */
   }
 
+  .links--r .contact-list{
+    display:flex;
+    flex-direction:row;
+    flex-wrap:wrap;                  /* drops to a second line only if it runs out of room */
+    justify-content:center;
+    gap:1rem clamp(1.25rem,6vw,2.5rem);   /* row gap, column gap */
+  }
+
   /* hover (mouse only): the old rules were written for a 3-column grid */
   @media (hover:hover){
     .grid>li:nth-child(n):has(~ li:nth-child(n):hover) .card{translate:none}
@@ -932,4 +972,25 @@ html::-webkit-scrollbar-thumb:active{
       translate:0 calc(var(--slide) * -1);
     }
   }
+}
+/* tab: flat top, sharp-ish S-curve shoulders (below 64rem, where the tab is visible) */
+.tab{
+  --sh:calc(var(--tab-h) * 1.8);                 /* shoulder width: bigger = gentler slope, smaller = steeper */
+  border-radius:calc(var(--tab-h) * .15) calc(var(--tab-h) * .15) 0 0;   /* was .8 */
+}
+
+.tab::before,
+.tab::after{
+  width:var(--sh);
+  height:100%;
+  -webkit-mask:none;
+          mask:none;
+}
+.tab::before{
+  right:calc(100% - 1px);                         /* 1px overlap so there is no seam */
+  clip-path:polygon(100% 0,90% 2.8%,80% 10.4%,70% 21.6%,60% 35.2%,50% 50%,40% 64.8%,30% 78.4%,20% 89.6%,10% 97.2%,0 100%,100% 100%);
+}
+.tab::after{
+  left:calc(100% - 1px);
+  clip-path:polygon(0 0,10% 2.8%,20% 10.4%,30% 21.6%,40% 35.2%,50% 50%,60% 64.8%,70% 78.4%,80% 89.6%,90% 97.2%,100% 100%,0 100%);
 }

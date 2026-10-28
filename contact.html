@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f0f0f">
+<title>Contact Me · Einar Lundqvist</title>
+<meta name="description" content="Get in touch with Einar Lundqvist, technical artist.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700&family=DM+Sans:wght@400;500&family=Instrument+Serif&display=swap">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/contact.css">
+</head>
+<body class="page">
+<header class="top">
+  <a class="logo" href="index.html" aria-label="Einar Lundqvist, home">
+    <span>Einar</span><span>Lundqvist</span>
+  </a>
+
+  <div class="actions">
+    <nav class="menu" aria-label="Main">
+      <a href="index.html#work" data-sign="⌂">Work</a>
+      <a href="about.html">About Me</a>
+      <a href="resume.pdf">CV<span class="cv-peek" aria-hidden="true"><img src="images/cvpreview.png" alt=""></span></a>
+      <a href="contact.html" aria-current="page">Contact Me</a>
+    </nav>
+  </div>
+</header>
+
+<main class="project contact">
+  <h1 class="sr-only">Contact Einar Lundqvist</h1>
+  <p class="hero">Contact <em>Me</em></p>
+
+  <div class="project-body">
+    <div class="contact-grid">
+
+      <!-- LEFT: wide. Open text on top, boxed form below -->
+      <div class="c-col c-col--left">
+
+        <section class="block block--plain block--lead" aria-labelledby="lead-h">
+          <h2 class="block-title" id="lead-h">Let’s <em>talk</em></h2>
+          <p class="block-text">Jag söker en praktikplats i höst inom tech art. Hör gärna av dig om samarbete eller bara för att prata shaders.</p>
+          <a class="mail-link" href="mailto:einar.lundqvist@gmail.com">
+            <span>Einar.Lundqvist@gmail.com</span>
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg>
+          </a>
+        </section>
+
+        <section class="block block--form" aria-labelledby="form-h">
+          <h2 class="block-sub" id="form-h">Send a message</h2>
+          <form class="form" action="https://api.web3forms.com/submit" method="post">
+            <input type="hidden" name="access_key" value="409227ed-bd7a-4efb-afda-3e8e42ecf06f">
+            <input type="hidden" name="subject" value="New message from your portfolio">
+            <input type="hidden" name="from_name" value="Portfolio contact form">
+            <input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off">
+                    
+            <label class="field">
+              <span>Name</span>
+              <input type="text" name="name" autocomplete="name" required>
+            </label>
+            <label class="field">
+              <span>Email</span>
+              <input type="email" name="email" autocomplete="email" required>
+            </label>
+            <label class="field field--wide">
+              <span>Message</span>
+              <textarea name="message" rows="5" required></textarea>
+            </label>
+          
+            <p class="form-status field--wide" role="status" aria-live="polite"></p>
+            <button class="btn btn--neon send" type="submit">Send</button>
+          </form>
+          
+          <div class="form-done" hidden tabindex="-1">
+            <p class="block-big">Thanks<em>!</em></p>
+            <p class="block-text">Your message is on its way. I'll reply to the address you gave.</p>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- RIGHT: narrower, starts lower. Boxed accent on top, open text below -->
+      <div class="c-col c-col--right">
+
+        <section class="block block--accent" aria-labelledby="avail-h">
+          <span class="shape" aria-hidden="true"></span>
+          <h2 class="block-sub" id="avail-h">Open for internship</h2>
+          <p class="block-big">Sep 2027 <em>–</em> Apr 2028</p>
+        </section>
+
+        <section class="block block--plain block--rule" aria-labelledby="details-h">
+          <h2 class="block-sub" id="details-h">Contact</h2>
+          <ul class="contact-list">
+            <li><a href="mailto:einar.lundqvist@gmail.com"><img class="ico" src="images/icons/gmail.png" alt="" width="40" height="40" onerror="this.hidden=true">Einar.Lundqvist@gmail.com</a></li>
+            <li><span class="ico-phone" aria-hidden="true"></span>079 335 12 35</li>
+            <li><span class="ico-location" aria-hidden="true"></span>Stockholm, Sweden</li>
+          </ul>
+        </section>
+
+        <section class="block block--plain block--rule" aria-labelledby="social-h">
+          <h2 class="block-sub" id="social-h">Socials</h2>
+          <ul class="contact-list contact-list--row">
+            <li><a href="#" target="_blank" rel="noopener"><img class="ico" src="images/icons/linkedin.png" alt="" width="40" height="40" onerror="this.hidden=true">LinkedIn</a></li>
+            <li><a href="#" target="_blank" rel="noopener"><img class="ico" src="images/icons/GitHub.png" alt="" width="40" height="40" onerror="this.hidden=true">GitHub</a></li>
+          </ul>
+        </section>
+
+      </div>
+    </div>
+  </div>
+</main>
+
+<svg class="bolts" viewBox="0 0 1375 708" preserveAspectRatio="xMidYMin meet" aria-hidden="true">
+<path pathLength="1" d="M85 -60 L70 8 C64 35 120 55 90 100 C65 137 170 150 210 135 C260 120 290 160 330 175 C380 192 410 150 450 190 C480 220 440 260 400 290 C360 320 380 360 350 385"/>
+<path pathLength="1" d="M1280 -60 L1295 28 C1301 63 1340 112 1300 138 C1260 164 1180 178 1135 148 C1090 118 1085 195 1035 192 C985 189 960 160 925 195 C890 230 945 268 972 298 C999 328 1025 375 1012 404"/>
+  <linearGradient id="fade-l" gradientUnits="userSpaceOnUse" x1="0" y1="190" x2="0" y2="385">
+    <stop offset="0" style="stop-color:var(--neon)"/>
+    <stop offset="1" style="stop-color:var(--neon);stop-opacity:0"/>
+  </linearGradient>
+  <linearGradient id="fade-r" gradientUnits="userSpaceOnUse" x1="0" y1="190" x2="0" y2="336">
+    <stop offset="0" style="stop-color:var(--neon)"/>
+    <stop offset="1" style="stop-color:var(--neon);stop-opacity:0"/>
+  </linearGradient>
+</svg>
+
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+<script src="js/script.js"></script>
+<script src="js/contact.js"></script>
+</body>
+</html>

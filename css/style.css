@@ -1038,3 +1038,42 @@ html::-webkit-scrollbar-thumb:active{
     justify-content:center;
   }
 }
+
+@media (min-width:33.5rem) and (max-width:53.125rem){
+  .grid{
+    --cols:2;
+    --slide:1.5rem;
+    row-gap:calc(var(--gap) + var(--slide));
+    margin-bottom:0;
+    max-width:none;
+    margin-inline:0;
+  }
+
+  /* reset the 3-column stagger */
+  .grid>li:nth-child(n){
+    translate:none;
+    will-change:auto;
+    transition:none;
+    grid-column:auto;
+  }
+  .grid>li .card{translate:none !important}
+
+  /* right column: starts half a tile lower, slides DOWN until its bottom lines up with the left column's bottom */
+  .grid>li:nth-child(even){
+    translate:0 calc(
+      var(--shift) +
+      (var(--w) + var(--gap) + var(--slide) - var(--shift)) * (1 - var(--t,1))
+    );
+    will-change:translate;
+    transition:translate .1s ease-out;
+  }
+
+  /* titles always visible in the row gaps */
+  .grid>li::after{
+    translate:0 0;
+    opacity:1;
+    place-items:end center;
+    transition:none;
+    padding-bottom:.3rem;
+  }
+}

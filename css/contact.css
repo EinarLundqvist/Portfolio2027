@@ -1,0 +1,201 @@
+/* ---------- contact page: asymmetric blockout ----------
+   Only two blocks keep a panel: the neon "Open for internship" box
+   (top right) and the form (lower left). Everything else is open text.
+   The boxes sit on a diagonal, so the page balances without mirroring.
+   The right column starts lower, the same half-step stagger as the work grid. */
+
+.contact{
+  --r:clamp(1rem,2vw,1.75rem);
+  --off:clamp(3rem,9vw,8rem);               /* how far the right column starts lower */
+  --blk:clamp(1.25rem,2.4vw,2.5rem);        /* inner padding of boxed blocks */
+}
+
+.contact-grid{display:grid;grid-template-columns:1fr;gap:clamp(2rem,4vw,3.5rem)}
+.c-col{display:flex;flex-direction:column;gap:clamp(2rem,4vw,3.5rem);min-width:0}
+
+@media (min-width:48rem){
+  .contact-grid{
+    grid-template-columns:minmax(0,7fr) minmax(0,5fr);
+    column-gap:clamp(1.5rem,3vw,3rem);
+    align-items:start;
+  }
+  .c-col--right{margin-top:var(--off)}
+}
+
+/* ---------- block: shared text styles ---------- */
+.block{
+  position:relative;
+  display:flex;flex-direction:column;align-items:flex-start;gap:1.25rem;
+  color:var(--paper);
+}
+
+/* boxed blocks: same panel look as the rest of the site */
+.block--form{
+  isolation:isolate;overflow:hidden;
+  padding:var(--blk);
+  background:var(--panel);
+  border:var(--bw) solid var(--ring);border-radius:var(--r);
+  transition:border-color .2s,box-shadow .3s;
+}
+.block--form::before{   /* film grain, same as .panel */
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:var(--noise) 0 0 / 260px 260px;
+  mix-blend-mode:overlay;opacity:.2;
+}
+
+/* open blocks: text straight on the page, no background */
+.block--plain{padding:0}
+.block--rule{                                  /* hairline divider, same as the menu's */
+  width:100%;
+  padding-top:clamp(1.25rem,2.4vw,2rem);
+  border-top:1px solid color-mix(in srgb,var(--paper) 14%,transparent);
+}
+
+.block-title{
+  margin:0;
+  font:700 clamp(2.6rem,1rem + 7vw,5.5rem)/.9 var(--display);
+  letter-spacing:-.02em;text-transform:uppercase;
+}
+.block-title em,.block-big em{font:400 1.12em/.85 var(--serif);letter-spacing:0;color:var(--neon)}
+.block-sub{
+  margin:0;
+  font:700 clamp(1.3rem,1rem + 1.1vw,2rem)/1 var(--display);
+  letter-spacing:-.01em;
+}
+.block-text{
+  margin:0;max-width:34rem;
+  font:400 clamp(.95rem,.85rem + .35vw,1.15rem)/1.5 var(--sans);
+  color:color-mix(in srgb,var(--paper) 80%,transparent);
+}
+.block-big{
+  margin:0;
+  font:700 clamp(1.8rem,1rem + 2.6vw,3.2rem)/1 var(--display);
+  letter-spacing:-.02em;text-transform:uppercase;
+}
+
+/* ---------- lead text ---------- */
+.block--lead{gap:1.25rem}
+.mail-link{
+  position:relative;display:inline-flex;align-items:center;gap:.6rem;
+  margin-top:.5rem;
+  font:700 clamp(1.05rem,.7rem + 1.5vw,1.9rem)/1.1 var(--display);
+  color:var(--paper);overflow-wrap:anywhere;
+  transition:color .2s;
+}
+.mail-link::after{                             /* underline wipes in from the left, like the About Me button */
+  content:"";position:absolute;left:0;right:0;bottom:-.4rem;height:2px;border-radius:2px;
+  background:var(--neon);
+  transform-origin:right center;scale:0 1;
+  transition:scale .4s cubic-bezier(.22,1,.36,1);
+}
+.mail-link svg{flex:none;transition:translate .2s}
+@media (hover:hover){
+  .mail-link:hover,.mail-link:focus-visible{color:var(--neon)}
+  .mail-link:hover::after,.mail-link:focus-visible::after{transform-origin:left center;scale:1 1}
+  .mail-link:hover svg{translate:2px -2px}
+}
+
+.block--accent{
+  /* text position: padding on each side */
+  --pad-top:2rem;
+  --pad-bottom:2rem;
+  --pad-left:2.5rem;
+  --pad-right:2.2rem;
+
+  /* background box scale (1 = fits the block exactly) */
+  --box-w:1;
+  --box-h:1;
+
+  isolation:isolate;
+  gap:.6rem;
+  padding:var(--pad-top) var(--pad-right) var(--pad-bottom) var(--pad-left);
+  filter:drop-shadow(0 0 .8rem rgb(240 152 37 / .35));
+}
+
+.block--accent .shape{
+  --sbw:2px;                                   /* outline thickness */
+  position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:var(--panel);
+  transform:scale(var(--box-w),calc(var(--box-h) * -1));
+  -webkit-mask:url("../images/mask2.png") center / 100% 100% no-repeat;
+          mask:url("../images/mask2.png") center / 100% 100% no-repeat;
+  -webkit-mask-source-type:luminance;
+          mask-mode:luminance;
+}
+.block--accent .shape::before{                 /* film grain */
+  content:"";position:absolute;inset:0;
+  background:var(--noise) 0 0 / 260px 260px;
+  mix-blend-mode:overlay;opacity:.2;
+}
+.block--accent .shape::after{                  /* neon outline, same two-mask trick as the tooltip */
+  content:"";position:absolute;inset:0;
+  background:var(--neon);
+  -webkit-mask:
+    url("../images/mask2.png") center / 100% 100% no-repeat,
+    url("../images/mask2.png") center / calc(100% - 2 * var(--sbw)) calc(100% - 2 * var(--sbw)) no-repeat;
+  -webkit-mask-composite:xor;
+          mask:
+    url("../images/mask2.png") center / 100% 100% no-repeat,
+    url("../images/mask2.png") center / calc(100% - 2 * var(--sbw)) calc(100% - 2 * var(--sbw)) no-repeat;
+          mask-composite:exclude;
+  -webkit-mask-source-type:luminance;
+          mask-mode:luminance;
+}
+
+/* ---------- form box ---------- */
+.form{
+  display:grid;grid-template-columns:1fr 1fr;gap:1rem;width:100%;
+}
+.field{display:grid;gap:.5rem}
+.field--wide{grid-column:1 / -1}
+
+.field span{
+  font:100 .85rem/1 var(--display);
+  letter-spacing:.06em;text-transform:uppercase;
+  color:color-mix(in srgb,var(--paper) 70%,transparent);
+}
+.field input,.field textarea{
+  width:100%;padding:.85rem 1rem;
+  background:rgb(0 0 0 / .25);color:var(--paper);
+  border:var(--bw) solid var(--ring);border-radius:.6rem;
+  font:400 1rem/1.4 var(--sans);
+  transition:border-color .2s,background-color .2s;
+}
+.field textarea{resize:vertical;min-height:7rem}
+.field input:hover,.field textarea:hover{border-color:color-mix(in srgb,var(--neon) 50%,var(--ring))}
+.field input:focus-visible,.field textarea:focus-visible{
+  outline:none;border-color:var(--neon);background:rgb(0 0 0 / .4);
+}
+.send{
+  grid-column:1 / -1;justify-self:start;
+  min-width:10rem;
+  transition:box-shadow .4s,scale .12s;
+}
+
+.send:active{scale:.95}
+
+@media (hover:hover){
+  .send:hover{box-shadow:0 0 .8rem rgb(240 152 37 / .7)}
+}
+
+@media (max-width:33.5rem){
+  .form{grid-template-columns:1fr}
+  .send{justify-self:stretch}
+}
+
+/* ---------- contact + social lists: left aligned ---------- */
+.contact .contact-list{justify-items:start;text-align:left;gap:1.25rem}
+.contact .contact-list li,
+.contact .contact-list a{justify-content:flex-start;white-space:normal;overflow-wrap:anywhere}
+.contact .contact-list li:has(.ico-location){display:flex}   /* the mobile rule hides it elsewhere */
+.contact .contact-list--row{display:flex;flex-wrap:wrap;gap:1rem 2rem}
+.contact .contact-list li{color:var(--paper)}
+.contact .contact-list a:hover,
+.contact .contact-list a:focus-visible{color:var(--neon)}
+
+.form[hidden],.form-done[hidden]{display:none}
+.form-done{display:grid;gap:1rem;outline:none}
+.form-status{margin:0;min-height:0}
+.form-status.is-error{color:var(--neon)}
+.form-status a{text-decoration:underline}
+.send:disabled{opacity:.6;cursor:wait}
